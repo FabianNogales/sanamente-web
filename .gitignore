@@ -43,3 +43,5 @@ Thumbs.db
 
 # Deployment
 .vercel/
+
+.git
