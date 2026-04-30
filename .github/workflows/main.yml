@@ -12,4 +12,4 @@ jobs:
     steps:
       - name: Trigger EasyPanel Deploy
         run: |
-          curl -X POST ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPsHHe7cnmPb/POyO6zH5fP/rSny73W97xkSSVJ1qzru root@622eeeff40f6
+          curl -X POST http://187.77.86.67:3000/api/deploy/7ccafb455c36e1938f66c501bae85add0d3505e3c402899e
