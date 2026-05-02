@@ -129,7 +129,7 @@ export function AdminReferralsView() {
       {loading ? <p className="text-sm text-slate-500">Cargando referidos...</p> : null}
       {error ? <p className="text-sm text-rose-600">{error}</p> : null}
 
-      <section className="grid grid-cols-2 xl:grid-cols-5 gap-3">
+      <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
         <article className="rounded-xl border border-slate-200 p-3"><p className="text-xs uppercase text-slate-500">Referidos totales</p><p className="text-2xl font-black">{metrics.total}</p></article>
         <article className="rounded-xl border border-slate-200 p-3"><p className="text-xs uppercase text-slate-500">Pendientes</p><p className="text-2xl font-black text-amber-600">{metrics.pending}</p></article>
         <article className="rounded-xl border border-slate-200 p-3"><p className="text-xs uppercase text-slate-500">Activos</p><p className="text-2xl font-black">{metrics.active}</p></article>

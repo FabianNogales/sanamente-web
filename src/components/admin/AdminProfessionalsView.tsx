@@ -250,7 +250,7 @@ export function AdminProfessionalsView() {
               if (event.key === "Enter") setSearch(searchInput.trim());
             }}
             placeholder="Buscar por nombre, email o teléfono"
-            className="h-10 min-w-[260px] flex-1 rounded-lg border border-slate-300 px-3 text-sm"
+            className="h-10 w-full sm:min-w-52 flex-1 rounded-lg border border-slate-300 px-3 text-sm"
           />
           <button type="button" className="h-10 rounded-lg bg-slate-900 px-4 text-sm font-semibold text-white" onClick={() => setSearch(searchInput.trim())}>
             Buscar
@@ -388,7 +388,7 @@ export function AdminProfessionalsView() {
               <input value={editEmail} onChange={(event) => setEditEmail(event.target.value)} className="h-10 rounded-lg border border-slate-300 px-3 text-sm" placeholder="Email" />
               <input value={editUsername} onChange={(event) => setEditUsername(event.target.value)} className="h-10 rounded-lg border border-slate-300 px-3 text-sm" placeholder="Username" />
               <input value={editRate} onChange={(event) => setEditRate(event.target.value)} className="h-10 rounded-lg border border-slate-300 px-3 text-sm" placeholder="Tarifa base (cr)" />
-              <textarea value={editBio} onChange={(event) => setEditBio(event.target.value)} className="min-h-[96px] rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Bio" />
+              <textarea value={editBio} onChange={(event) => setEditBio(event.target.value)} className="min-h-24 rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Bio" />
             </div>
             <div className="mt-3 flex items-center justify-end gap-2">
               <button type="button" className="h-10 rounded-lg border border-slate-300 bg-white px-4 text-sm font-semibold" onClick={() => setEditingProfessional(null)}>

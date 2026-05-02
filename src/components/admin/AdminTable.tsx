@@ -16,7 +16,7 @@ type Props<T> = {
 export function AdminTable<T>({ rows, columns, rowKey }: Props<T>) {
   return (
     <div className="overflow-x-auto rounded-xl border border-slate-200">
-      <table className="min-w-[980px] w-full border-collapse">
+      <table className="min-w-150 w-full border-collapse">
         <thead className="bg-slate-50">
           <tr>
             {columns.map((column) => (

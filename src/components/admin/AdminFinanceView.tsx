@@ -149,7 +149,7 @@ export function AdminFinanceView() {
       {loading ? <p className="text-sm text-slate-500">Cargando datos financieros...</p> : null}
       {error ? <p className="text-sm text-rose-600">{error}</p> : null}
 
-      <section className="grid grid-cols-2 xl:grid-cols-6 gap-3">
+      <section className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
         <article className="rounded-xl border border-slate-200 p-3"><p className="text-xs uppercase text-slate-500">Ingresos brutos</p><p className="text-xl font-black">{moneyBs(financial.gross)}</p></article>
         <article className="rounded-xl border border-slate-200 p-3"><p className="text-xs uppercase text-slate-500">Ganancia plataforma</p><p className="text-xl font-black">{moneyBs(financial.platform)}</p></article>
         <article className="rounded-xl border border-slate-200 p-3"><p className="text-xs uppercase text-slate-500">Pagado a profesionales</p><p className="text-xl font-black">{moneyBs(financial.professionalPaid)}</p></article>
@@ -285,7 +285,7 @@ export function AdminFinanceView() {
             <textarea
               value={approvalNotes}
               onChange={(event) => setApprovalNotes(event.target.value)}
-              className="min-h-[84px] w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              className="min-h-21 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
               placeholder="Nota interna (opcional)"
             />
             <input
@@ -316,13 +316,13 @@ export function AdminFinanceView() {
             <textarea
               value={rejectionReason}
               onChange={(event) => setRejectionReason(event.target.value)}
-              className="min-h-[84px] w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              className="min-h-21 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
               placeholder="Motivo de rechazo (obligatorio)"
             />
             <textarea
               value={rejectionNotes}
               onChange={(event) => setRejectionNotes(event.target.value)}
-              className="min-h-[84px] w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              className="min-h-21 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
               placeholder="Nota interna (opcional)"
             />
             <div className="flex items-center justify-end gap-2">

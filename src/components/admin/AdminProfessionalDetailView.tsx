@@ -120,7 +120,7 @@ export function AdminProfessionalDetailView({ professionalId }: Props) {
       {error ? <p className="text-sm text-rose-600">{error}</p> : null}
 
       {row ? (
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <section className="rounded-xl border border-slate-200 p-4 space-y-3">
             <h3 className="text-lg font-bold">{fullName(row)}</h3>
             <div>
@@ -189,7 +189,7 @@ export function AdminProfessionalDetailView({ professionalId }: Props) {
               <input value={editUsername} onChange={(event) => setEditUsername(event.target.value)} className="h-10 rounded-lg border border-slate-300 px-3 text-sm" placeholder="Username" />
               <input value={editRate} onChange={(event) => setEditRate(event.target.value)} className="h-10 rounded-lg border border-slate-300 px-3 text-sm" placeholder="Tarifa base (cr)" />
             </div>
-            <textarea value={editBio} onChange={(event) => setEditBio(event.target.value)} className="min-h-[100px] w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Bio" />
+            <textarea value={editBio} onChange={(event) => setEditBio(event.target.value)} className="min-h-25 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Bio" />
             <button type="button" className="h-10 rounded-lg bg-indigo-600 px-4 text-sm font-semibold text-white disabled:opacity-60" onClick={() => void saveEdit()} disabled={saving}>
               {saving ? "Guardando..." : "Guardar cambios"}
             </button>

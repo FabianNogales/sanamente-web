@@ -115,7 +115,7 @@ export function AdminUsersView() {
               if (event.key === "Enter") setSearch(searchInput.trim());
             }}
             placeholder="Buscar por nombre o email..."
-            className="h-10 min-w-[260px] flex-1 rounded-lg border border-slate-300 px-3 text-sm"
+            className="h-10 w-full sm:min-w-52 flex-1 rounded-lg border border-slate-300 px-3 text-sm"
           />
           <button
             type="button"
