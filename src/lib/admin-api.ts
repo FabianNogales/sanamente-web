@@ -40,8 +40,9 @@ export async function getAdminClients(
   search?: string,
   cursor?: string,
   limit = 20,
+  billingRegion?: "BOLIVIA" | "INTERNATIONAL",
 ): Promise<AdminPaginated<AdminUserRecord>> {
-  const query = buildQueryString({ search, cursor, limit });
+  const query = buildQueryString({ search, cursor, limit, billingRegion });
   const response = await apiRequest<{ data?: AdminUserRecord[]; nextCursor?: string | null }>(`/admin/clients${query}`, {
     method: "GET",
     token,

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { AdminShell } from "./AdminShell";
@@ -10,6 +10,7 @@ import type { AdminUserRecord } from "@/lib/admin-types";
 import { useAdminGuard } from "./useAdminGuard";
 
 type StatusFilter = "all" | "active" | "blocked" | "inactive";
+type RegionFilter = "all" | "BOLIVIA" | "INTERNATIONAL";
 
 const statusTabs: { key: StatusFilter; label: string }[] = [
   { key: "all", label: "Todos" },
@@ -35,6 +36,7 @@ export function AdminUsersView() {
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<StatusFilter>("all");
+  const [region, setRegion] = useState<RegionFilter>("all");
   const [rows, setRows] = useState<AdminUserRecord[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [selectedUser, setSelectedUser] = useState<AdminUserRecord | null>(null);
@@ -45,7 +47,13 @@ export function AdminUsersView() {
     try {
       setLoading(true);
       setError(null);
-      const result = await getAdminClients(token!, search || undefined, initial ? undefined : nextCursor ?? undefined, 20);
+      const result = await getAdminClients(
+        token!,
+        search || undefined,
+        initial ? undefined : nextCursor ?? undefined,
+        20,
+        region === "all" ? undefined : region,
+      );
       if (initial) setRows(result.data);
       else setRows((prev) => [...prev, ...result.data]);
       setNextCursor(result.nextCursor);
@@ -59,7 +67,7 @@ export function AdminUsersView() {
   useEffect(() => {
     void load(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token, search]);
+  }, [token, search, region]);
 
   const filtered = useMemo(() => {
     if (status === "all") return rows;
@@ -124,6 +132,15 @@ export function AdminUsersView() {
           >
             Buscar
           </button>
+          <select
+            value={region}
+            onChange={(event) => setRegion(event.target.value as RegionFilter)}
+            className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm"
+          >
+            <option value="all">Todas las regiones</option>
+            <option value="BOLIVIA">Bolivia</option>
+            <option value="INTERNATIONAL">Internacional</option>
+          </select>
           {statusTabs.map((tab) => {
             const active = status === tab.key;
             return (
@@ -172,6 +189,11 @@ export function AdminUsersView() {
             columns={[
               { key: "name", title: "Usuario", render: (row) => <span className="font-semibold">{fullName(row)}</span> },
               { key: "contact", title: "Email/Teléfono", render: (row) => row.email ?? row.phoneNumber },
+              {
+                key: "region",
+                title: "Region/Pais",
+                render: (row) => `${row.billingRegion ?? "-"} · ${row.phoneCountryIso ?? "-"}`,
+              },
               {
                 key: "status",
                 title: "Estado",
@@ -232,6 +254,12 @@ export function AdminUsersView() {
                 <p><strong>Nombre:</strong> {fullName(selectedUser)}</p>
                 <p><strong>Email:</strong> {selectedUser.email ?? "-"}</p>
                 <p><strong>Teléfono:</strong> {selectedUser.phoneNumber}</p>
+                <p><strong>Dial:</strong> {selectedUser.phoneDialCode ?? "-"}</p>
+                <p><strong>Nacional:</strong> {selectedUser.phoneNationalNumber ?? "-"}</p>
+                <p><strong>País ISO:</strong> {selectedUser.phoneCountryIso ?? "-"}</p>
+                <p><strong>País:</strong> {selectedUser.phoneCountryName ?? "-"}</p>
+                <p><strong>Billing region:</strong> {selectedUser.billingRegion ?? "-"}</p>
+                <p><strong>Moneda preferida:</strong> {selectedUser.preferredCurrency ?? "-"}</p>
                 <p><strong>Referral code:</strong> {selectedUser.referralCode ?? "-"}</p>
                 <p><strong>Username:</strong> {selectedUser.userProfile?.userName ?? "-"}</p>
                 <p><strong>Bio:</strong> {selectedUser.userProfile?.bio ?? "-"}</p>
@@ -245,4 +273,5 @@ export function AdminUsersView() {
     </AdminShell>
   );
 }
+
 

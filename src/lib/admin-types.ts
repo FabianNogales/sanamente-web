@@ -29,6 +29,12 @@ export type AdminUserRecord = {
   lastName: string | null;
   email: string | null;
   phoneNumber: string;
+  phoneDialCode?: string | null;
+  phoneNationalNumber?: string | null;
+  phoneCountryIso?: string | null;
+  phoneCountryName?: string | null;
+  billingRegion?: string | null;
+  preferredCurrency?: string | null;
   isActive: boolean;
   createdAt: string;
   referralCode?: string | null;
