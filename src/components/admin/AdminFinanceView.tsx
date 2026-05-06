@@ -6,11 +6,13 @@ import { AdminTable } from "./AdminTable";
 import { AdminStatusBadge } from "./AdminStatusBadge";
 import { AdminEmptyState } from "./AdminEmptyState";
 import {
+  getAdminConfig,
   getAdminDeposits,
   getAdminPendingWithdrawalRequests,
   getAdminStats,
   getAdminWithdrawalHistory,
   getPromotionalCreditGrants,
+  updateAdminConfig,
   updateAdminDepositStatus,
   updateAdminWithdrawalStatus,
 } from "@/lib/admin-api";
@@ -24,6 +26,10 @@ function moneyBs(value: number) {
   return `Bs ${Number(value || 0).toFixed(2)}`;
 }
 
+function moneyUsd(value: number) {
+  return `$ ${Number(value || 0).toFixed(2)}`;
+}
+
 export function AdminFinanceView() {
   const { loading: guardLoading, token } = useAdminGuard();
   const [loading, setLoading] = useState(true);
@@ -32,6 +38,10 @@ export function AdminFinanceView() {
   const [deposits, setDeposits] = useState<any[]>([]);
   const [withdrawals, setWithdrawals] = useState<any[]>([]);
   const [withdrawalHistory, setWithdrawalHistory] = useState<any[]>([]);
+
+  const [usdExchangeRate, setUsdExchangeRate] = useState<number>(6.96);
+  const [usdRateInput, setUsdRateInput] = useState("6.96");
+  const [savingRate, setSavingRate] = useState(false);
 
   const [approvalTarget, setApprovalTarget] = useState<any | null>(null);
   const [approvalNotes, setApprovalNotes] = useState("");
@@ -48,21 +58,44 @@ export function AdminFinanceView() {
     try {
       setLoading(true);
       setError(null);
-      const [statsData, depositsData, withdrawalsData, withdrawalHistoryData] = await Promise.all([
+      const [statsData, depositsData, withdrawalsData, withdrawalHistoryData, configData] = await Promise.all([
         getAdminStats(token!),
         getAdminDeposits(token!, undefined, undefined, 30),
         getAdminPendingWithdrawalRequests(token!, undefined, undefined, 30),
         getAdminWithdrawalHistory(token!, undefined, undefined, 30),
+        getAdminConfig(token!),
       ]);
       setStats(statsData);
       setDeposits(depositsData.requests);
       setWithdrawals(withdrawalsData.data);
       setWithdrawalHistory(withdrawalHistoryData.data);
+      const rate = Number(configData.usdExchangeRate ?? 6.96);
+      setUsdExchangeRate(rate);
+      setUsdRateInput(String(rate));
       await getPromotionalCreditGrants(token!, 20);
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo cargar el panel financiero.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleSaveUsdRate() {
+    if (!token) return;
+    const rate = Number(usdRateInput);
+    if (!Number.isFinite(rate) || rate <= 0) {
+      window.alert("Ingresa un tipo de cambio válido mayor a 0.");
+      return;
+    }
+    try {
+      setSavingRate(true);
+      await updateAdminConfig(token!, { usdExchangeRate: rate });
+      setUsdExchangeRate(rate);
+      window.alert(`Tipo de cambio actualizado: 1 USD = Bs ${rate.toFixed(4)}`);
+    } catch (err) {
+      window.alert(err instanceof Error ? err.message : "No se pudo actualizar el tipo de cambio.");
+    } finally {
+      setSavingRate(false);
     }
   }
 
@@ -199,7 +232,35 @@ export function AdminFinanceView() {
       </section>
 
       <section className="mt-5 space-y-2">
-        <h3 className="text-lg font-bold">Retiros pendientes</h3>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h3 className="text-lg font-bold">Retiros pendientes</h3>
+          <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2">
+            <span className="text-xs font-semibold text-amber-700">Tipo de cambio USD:</span>
+            <span className="text-xs text-amber-600">1 USD =</span>
+            <input
+              type="number"
+              step="0.01"
+              min="0.01"
+              value={usdRateInput}
+              onChange={(e) => setUsdRateInput(e.target.value)}
+              className="h-7 w-24 rounded-md border border-amber-300 bg-white px-2 text-xs font-semibold text-amber-900"
+            />
+            <span className="text-xs text-amber-600">Bs</span>
+            <button
+              type="button"
+              disabled={savingRate}
+              onClick={() => void handleSaveUsdRate()}
+              className="h-7 rounded-md bg-amber-500 px-3 text-xs font-semibold text-white disabled:opacity-60"
+            >
+              {savingRate ? "..." : "Guardar"}
+            </button>
+          </div>
+        </div>
+        {withdrawals.some((w) => (w.currency ?? "BOB") === "USD") && (
+          <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+            Hay retiros en USD. El monto a pagar en Bs se calcula con el tipo de cambio configurado (1 USD = Bs {usdExchangeRate.toFixed(4)}).
+          </p>
+        )}
         {withdrawals.length === 0 ? (
           <AdminEmptyState title="Sin retiros pendientes" description="No hay solicitudes pendientes por procesar." />
         ) : (
@@ -208,8 +269,37 @@ export function AdminFinanceView() {
             rowKey={(row) => row.id}
             columns={[
               { key: "professional", title: "Profesional", render: (row) => <span className="font-semibold">{fullName(row.professional)}</span> },
-              { key: "amount", title: "Retiro", render: (row) => `${Number(row.credits).toFixed(2)} cr` },
-              { key: "bs", title: "Equiv. Bs", render: (row) => moneyBs(Number(row.amountBs ?? row.soles ?? 0)) },
+              { key: "amount", title: "Créditos", render: (row) => `${Number(row.credits).toFixed(2)} cr` },
+              {
+                key: "currency",
+                title: "Moneda",
+                render: (row) => {
+                  const isUsd = (row.currency ?? "BOB") === "USD";
+                  return (
+                    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${isUsd ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-600"}`}>
+                      {isUsd ? "USD" : "BOB"}
+                    </span>
+                  );
+                },
+              },
+              {
+                key: "monto",
+                title: "Monto a pagar",
+                render: (row) => {
+                  const isUsd = (row.currency ?? "BOB") === "USD";
+                  const base = Number(row.amountBs ?? row.soles ?? 0);
+                  if (isUsd) {
+                    const inBs = base * usdExchangeRate;
+                    return (
+                      <span>
+                        <span className="font-semibold text-blue-700">{moneyUsd(base)}</span>
+                        <span className="ml-1 text-xs text-slate-500">≈ {moneyBs(inBs)}</span>
+                      </span>
+                    );
+                  }
+                  return <span className="font-semibold">{moneyBs(base)}</span>;
+                },
+              },
               { key: "account", title: "Cuenta", render: (row) => `${row.bankName} - ${row.accountNumber}${row.accountHolderName ? ` (${row.accountHolderName})` : ""}` },
               { key: "created", title: "Fecha", render: (row) => new Date(row.createdAt).toLocaleDateString() },
               { key: "status", title: "Estado", render: () => <AdminStatusBadge label="PENDING" tone="warning" /> },
@@ -259,7 +349,28 @@ export function AdminFinanceView() {
             columns={[
               { key: "professional", title: "Profesional", render: (row) => <span className="font-semibold">{fullName(row.professional)}</span> },
               { key: "credits", title: "Créditos", render: (row) => Number(row.credits).toFixed(2) },
-              { key: "bs", title: "Bs", render: (row) => moneyBs(Number(row.amountBs ?? row.soles ?? 0)) },
+              {
+                key: "currency",
+                title: "Moneda",
+                render: (row) => {
+                  const isUsd = (row.currency ?? "BOB") === "USD";
+                  return (
+                    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold ${isUsd ? "bg-blue-100 text-blue-700" : "bg-slate-100 text-slate-600"}`}>
+                      {isUsd ? "USD" : "BOB"}
+                    </span>
+                  );
+                },
+              },
+              {
+                key: "monto",
+                title: "Monto",
+                render: (row) => {
+                  const isUsd = (row.currency ?? "BOB") === "USD";
+                  const base = Number(row.amountBs ?? row.soles ?? 0);
+                  if (isUsd) return <span className="font-semibold text-blue-700">{moneyUsd(base)}</span>;
+                  return moneyBs(base);
+                },
+              },
               {
                 key: "status",
                 title: "Estado",
@@ -280,7 +391,16 @@ export function AdminFinanceView() {
           <div className="w-full max-w-xl rounded-xl border border-slate-200 bg-white p-4 space-y-3">
             <h3 className="text-lg font-bold">Aprobar retiro</h3>
             <p className="text-sm text-slate-600">
-              {fullName(approvalTarget.professional)} - {moneyBs(Number(approvalTarget.amountBs ?? approvalTarget.soles ?? 0))}
+              {fullName(approvalTarget.professional)}
+              {" — "}
+              {(approvalTarget.currency ?? "BOB") === "USD"
+                ? <>
+                    <span className="font-semibold text-blue-700">{moneyUsd(Number(approvalTarget.amountBs ?? approvalTarget.soles ?? 0))}</span>
+                    <span className="ml-1 text-xs text-slate-400">≈ {moneyBs(Number(approvalTarget.amountBs ?? approvalTarget.soles ?? 0) * usdExchangeRate)}</span>
+                    <span className="ml-1 text-xs text-amber-600">(TC: 1 USD = Bs {usdExchangeRate.toFixed(4)})</span>
+                  </>
+                : moneyBs(Number(approvalTarget.amountBs ?? approvalTarget.soles ?? 0))
+              }
             </p>
             <textarea
               value={approvalNotes}

@@ -16,6 +16,7 @@ export function AdminConfigView() {
 
   const [platformFeePercent, setPlatformFeePercent] = useState("50");
   const [creditValueBs, setCreditValueBs] = useState("1");
+  const [usdExchangeRate, setUsdExchangeRate] = useState("6.96");
   const [referralPercentage, setReferralPercentage] = useState("2.5");
   const [referralRewardCredits, setReferralRewardCredits] = useState("10");
   const [referralMinDepositAmount, setReferralMinDepositAmount] = useState("0");
@@ -37,6 +38,7 @@ export function AdminConfigView() {
       const [config, grantsData] = await Promise.all([getAdminConfig(token!), getPromotionalCreditGrants(token!, 30)]);
       setPlatformFeePercent(String(config.platformFeePercent));
       setCreditValueBs(String(config.creditValueBs ?? config.creditToSolesRate));
+      setUsdExchangeRate(String(config.usdExchangeRate ?? 6.96));
       setReferralPercentage(String(config.referralPercentage ?? 2.5));
       setReferralRewardCredits(String(config.referralRewardCredits));
       setReferralMinDepositAmount(String(config.referralMinDepositAmount));
@@ -60,12 +62,14 @@ export function AdminConfigView() {
     if (!token) return;
     const platform = Number(platformFeePercent);
     const creditValue = Number(creditValueBs);
+    const usdRate = Number(usdExchangeRate);
     const refPct = Number(referralPercentage);
     const rewardCredits = Number(referralRewardCredits);
     const minDeposit = Number(referralMinDepositAmount);
 
     if (!Number.isFinite(platform) || platform < 0 || platform > 100) return window.alert("Comisión de plataforma entre 0 y 100.");
     if (!Number.isFinite(creditValue) || creditValue < 0) return window.alert("Valor de 1 crédito inválido.");
+    if (!Number.isFinite(usdRate) || usdRate <= 0) return window.alert("Tipo de cambio USD inválido.");
     if (!Number.isFinite(refPct) || refPct < 0 || refPct > 100) return window.alert("Porcentaje de referidos entre 0 y 100.");
     if (!Number.isFinite(rewardCredits) || rewardCredits < 0) return window.alert("Recompensa fija inválida.");
     if (!Number.isFinite(minDeposit) || minDeposit < 0) return window.alert("Mínimo de depósito inválido.");
@@ -75,6 +79,7 @@ export function AdminConfigView() {
       await updateAdminConfig(token!, {
         platformFeePercent: platform,
         creditValueBs: creditValue,
+        usdExchangeRate: usdRate,
         referralPercentage: refPct,
         referralRewardCredits: rewardCredits,
         referralMinDepositAmount: minDeposit,
@@ -129,6 +134,9 @@ export function AdminConfigView() {
           </label>
           <label className="text-sm">Valor de 1 crédito (Bs)
             <input value={creditValueBs} onChange={(e) => setCreditValueBs(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-slate-300 px-3 text-sm" />
+          </label>
+          <label className="text-sm">Tipo de cambio USD → Bs (retiros en dólares)
+            <input value={usdExchangeRate} onChange={(e) => setUsdExchangeRate(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-slate-300 px-3 text-sm" placeholder="Ej: 6.96" />
           </label>
           <label className="text-sm">Porcentaje de referidos (%)
             <input value={referralPercentage} onChange={(e) => setReferralPercentage(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-slate-300 px-3 text-sm" />

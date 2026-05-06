@@ -341,6 +341,7 @@ export async function getAdminConfig(token: string): Promise<Required<AdminConfi
     platformFeePercent: Number(response?.platformFeePercent ?? 50),
     creditValueBs,
     creditToSolesRate: creditValueBs,
+    usdExchangeRate: Number(response?.usdExchangeRate ?? 6.96),
     minAppVersion: String(response?.minAppVersion ?? "1.0"),
     referralPercentage: Number(response?.referralPercentage ?? 2.5),
     referralRewardCredits: Number(response?.referralRewardCredits ?? 10),

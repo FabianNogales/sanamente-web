@@ -83,6 +83,7 @@ export type AdminWithdrawalRecord = {
   credits: number;
   amountBs: number;
   soles?: number;
+  currency?: "BOB" | "USD" | string;
   status: "PENDING" | "APPROVED" | "REJECTED";
   notes?: string | null;
   rejectionReason?: string | null;
@@ -196,6 +197,7 @@ export type AdminConfigPayload = {
   platformFeePercent?: number;
   creditValueBs?: number;
   creditToSolesRate?: number;
+  usdExchangeRate?: number;
   minAppVersion?: string;
   referralPercentage?: number;
   referralRewardCredits?: number;

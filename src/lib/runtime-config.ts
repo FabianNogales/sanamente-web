@@ -1,5 +1,7 @@
 function normalizeBaseUrl(value: string | undefined, fallback?: string) {
   const rawValue = value ?? fallback;
+  
+  console.log("Normalizing base URL:", { value, fallback, rawValue });
 
   if (!rawValue) {
     throw new Error("Missing required public env var: NEXT_PUBLIC_API_URL");
