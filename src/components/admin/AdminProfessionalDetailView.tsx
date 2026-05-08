@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AdminShell } from "./AdminShell";
 import { AdminStatusBadge } from "./AdminStatusBadge";
-import { editAdminProfessional, getAdminProfessionalById, getAdminProfessionalStats, updateAdminProfessionalProfile, updateAdminProfessionalStatus } from "@/lib/admin-api";
+import { editAdminProfessional, getAdminProfessionalById, updateAdminProfessionalProfile, updateAdminProfessionalStatus } from "@/lib/admin-api";
 import type { AdminProfessionalRecord } from "@/lib/admin-types";
 import { useAdminGuard } from "./useAdminGuard";
 
@@ -21,14 +21,11 @@ export function AdminProfessionalDetailView({ professionalId }: Props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [row, setRow] = useState<AdminProfessionalRecord | null>(null);
-  const [stats, setStats] = useState<any>(null);
   const [saving, setSaving] = useState(false);
-
   const [editPhone, setEditPhone] = useState("");
   const [editEmail, setEditEmail] = useState("");
   const [editUsername, setEditUsername] = useState("");
   const [editBio, setEditBio] = useState("");
-  const [editRate, setEditRate] = useState("");
   const [editFirstName, setEditFirstName] = useState("");
   const [editLastName, setEditLastName] = useState("");
 
@@ -39,18 +36,13 @@ export function AdminProfessionalDetailView({ professionalId }: Props) {
       try {
         setLoading(true);
         setError(null);
-        const [detail, detailStats] = await Promise.all([
-          getAdminProfessionalById(token!, professionalId),
-          getAdminProfessionalStats(token!, professionalId),
-        ]);
+        const detail = await getAdminProfessionalById(token!, professionalId);
         if (!active) return;
         setRow(detail);
-        setStats(detailStats);
         setEditPhone(detail.phoneNumber ?? "");
         setEditEmail(detail.email ?? "");
         setEditUsername(detail.professionalProfile?.username ?? "");
         setEditBio(detail.professionalProfile?.bio ?? "");
-        setEditRate(String(Number(detail.professionalProfile?.rateCredits ?? 0)));
         setEditFirstName(detail.firstName ?? "");
         setEditLastName(detail.lastName ?? "");
       } catch (err) {
@@ -78,11 +70,6 @@ export function AdminProfessionalDetailView({ professionalId }: Props) {
 
   async function saveEdit() {
     if (!token || !row) return;
-    const rateCredits = Number(editRate);
-    if (!Number.isFinite(rateCredits) || rateCredits < 0) {
-      window.alert("La tarifa base debe ser un número mayor o igual a 0.");
-      return;
-    }
     try {
       setSaving(true);
       await editAdminProfessional(token!, row.id, {
@@ -90,7 +77,6 @@ export function AdminProfessionalDetailView({ professionalId }: Props) {
         email: editEmail.trim() || undefined,
         username: editUsername.trim() || undefined,
         bio: editBio.trim() || undefined,
-        rateCredits,
       });
       await updateAdminProfessionalProfile(token!, row.id, {
         firstName: editFirstName.trim() || undefined,
@@ -129,7 +115,6 @@ export function AdminProfessionalDetailView({ professionalId }: Props) {
             <p className="text-sm"><strong>Email:</strong> {row.email ?? "-"}</p>
             <p className="text-sm"><strong>Teléfono:</strong> {row.phoneNumber}</p>
             <p className="text-sm"><strong>Username:</strong> {row.professionalProfile?.username ?? "-"}</p>
-            <p className="text-sm"><strong>Tarifa base:</strong> {Number(row.professionalProfile?.rateCredits ?? 0).toFixed(2)} cr</p>
             <p className="text-sm"><strong>Bio:</strong> {row.professionalProfile?.bio ?? "-"}</p>
 
             <div className="pt-2 flex flex-wrap gap-2">
@@ -170,13 +155,6 @@ export function AdminProfessionalDetailView({ professionalId }: Props) {
                 </li>
               ))}
             </ul>
-            {stats ? (
-              <div className="rounded-lg bg-slate-50 border border-slate-200 p-3 text-sm">
-                <p><strong>Balance:</strong> {Number(stats?.balance?.credits ?? 0).toFixed(2)} cr</p>
-                <p><strong>Hoy:</strong> {Number(stats?.earnings?.today?.credits ?? 0).toFixed(2)} cr</p>
-                <p><strong>Mes:</strong> {Number(stats?.earnings?.thisMonth?.credits ?? 0).toFixed(2)} cr</p>
-              </div>
-            ) : null}
           </section>
 
           <section className="rounded-xl border border-slate-200 p-4 space-y-2 xl:col-span-2">
@@ -187,7 +165,6 @@ export function AdminProfessionalDetailView({ professionalId }: Props) {
               <input value={editPhone} onChange={(event) => setEditPhone(event.target.value)} className="h-10 rounded-lg border border-slate-300 px-3 text-sm" placeholder="Teléfono" />
               <input value={editEmail} onChange={(event) => setEditEmail(event.target.value)} className="h-10 rounded-lg border border-slate-300 px-3 text-sm" placeholder="Email" />
               <input value={editUsername} onChange={(event) => setEditUsername(event.target.value)} className="h-10 rounded-lg border border-slate-300 px-3 text-sm" placeholder="Username" />
-              <input value={editRate} onChange={(event) => setEditRate(event.target.value)} className="h-10 rounded-lg border border-slate-300 px-3 text-sm" placeholder="Tarifa base (cr)" />
             </div>
             <textarea value={editBio} onChange={(event) => setEditBio(event.target.value)} className="min-h-25 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Bio" />
             <button type="button" className="h-10 rounded-lg bg-indigo-600 px-4 text-sm font-semibold text-white disabled:opacity-60" onClick={() => void saveEdit()} disabled={saving}>

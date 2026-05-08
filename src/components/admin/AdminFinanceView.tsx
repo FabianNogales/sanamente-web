@@ -7,13 +7,10 @@ import { AdminStatusBadge } from "./AdminStatusBadge";
 import { AdminEmptyState } from "./AdminEmptyState";
 import {
   getAdminConfig,
-  getAdminDeposits,
   getAdminPendingWithdrawalRequests,
   getAdminStats,
   getAdminWithdrawalHistory,
-  getPromotionalCreditGrants,
   updateAdminConfig,
-  updateAdminDepositStatus,
   updateAdminWithdrawalStatus,
 } from "@/lib/admin-api";
 import { useAdminGuard } from "./useAdminGuard";
@@ -35,7 +32,6 @@ export function AdminFinanceView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [stats, setStats] = useState<any>(null);
-  const [deposits, setDeposits] = useState<any[]>([]);
   const [withdrawals, setWithdrawals] = useState<any[]>([]);
   const [withdrawalHistory, setWithdrawalHistory] = useState<any[]>([]);
 
@@ -58,21 +54,18 @@ export function AdminFinanceView() {
     try {
       setLoading(true);
       setError(null);
-      const [statsData, depositsData, withdrawalsData, withdrawalHistoryData, configData] = await Promise.all([
+      const [statsData, withdrawalsData, withdrawalHistoryData, configData] = await Promise.all([
         getAdminStats(token!),
-        getAdminDeposits(token!, undefined, undefined, 30),
         getAdminPendingWithdrawalRequests(token!, undefined, undefined, 30),
         getAdminWithdrawalHistory(token!, undefined, undefined, 30),
         getAdminConfig(token!),
       ]);
       setStats(statsData);
-      setDeposits(depositsData.requests);
       setWithdrawals(withdrawalsData.data);
       setWithdrawalHistory(withdrawalHistoryData.data);
       const rate = Number(configData.usdExchangeRate ?? 6.96);
       setUsdExchangeRate(rate);
       setUsdRateInput(String(rate));
-      await getPromotionalCreditGrants(token!, 20);
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo cargar el panel financiero.");
     } finally {
@@ -113,17 +106,6 @@ export function AdminFinanceView() {
     const withdrawalsPending = Number(stats?.withdrawals?.pending ?? withdrawals.length);
     return { gross, platform, professionalPaid, promotional, referrals, withdrawalsPending };
   }, [stats, withdrawals.length]);
-
-  async function handleDepositStatus(id: string, status: "APPROVED" | "REJECTED") {
-    if (!token) return;
-    try {
-      await updateAdminDepositStatus(token!, id, status, status === "REJECTED" ? "Rechazado desde panel admin" : undefined);
-      await loadData();
-      window.alert(`Depósito actualizado a ${status}.`);
-    } catch (err) {
-      window.alert(err instanceof Error ? err.message : "No se pudo actualizar el depósito.");
-    }
-  }
 
   async function handleApproveWithdrawal() {
     if (!token || !approvalTarget) return;
@@ -192,46 +174,6 @@ export function AdminFinanceView() {
       </section>
 
       <section className="mt-5 space-y-2">
-        <h3 className="text-lg font-bold">Depósitos recientes</h3>
-        {deposits.length === 0 ? (
-          <AdminEmptyState title="Sin depósitos" description="No hay solicitudes de depósito recientes." />
-        ) : (
-          <AdminTable
-            rows={deposits}
-            rowKey={(row) => row.id}
-            columns={[
-              { key: "user", title: "Usuario", render: (row) => <span className="font-semibold">{fullName(row.user)}</span> },
-              { key: "package", title: "Paquete", render: (row) => row.packageNameAtMoment ?? "-" },
-              { key: "amount", title: "Monto Bs", render: (row) => moneyBs(Number(row.amountBs ?? row.amount ?? 0)) },
-              { key: "credits", title: "Créditos", render: (row) => Number(row.creditsToDeliver ?? 0).toFixed(2) },
-              { key: "receipt", title: "Comprobante", render: (row) => row.receiptUrl ? <a href={row.receiptUrl} className="text-indigo-600 font-semibold" target="_blank" rel="noopener noreferrer">Ver</a> : "-" },
-              {
-                key: "status",
-                title: "Estado",
-                render: (row) => (
-                  <AdminStatusBadge label={row.status} tone={row.status === "APPROVED" ? "positive" : row.status === "REJECTED" ? "danger" : "warning"} />
-                ),
-              },
-              {
-                key: "actions",
-                title: "Acciones",
-                render: (row) => (
-                  <div className="flex gap-2">
-                    <button type="button" className="h-8 rounded-md bg-emerald-100 px-3 text-xs font-semibold text-emerald-700" onClick={() => void handleDepositStatus(row.id, "APPROVED")}>
-                      Aprobar
-                    </button>
-                    <button type="button" className="h-8 rounded-md bg-rose-100 px-3 text-xs font-semibold text-rose-700" onClick={() => void handleDepositStatus(row.id, "REJECTED")}>
-                      Rechazar
-                    </button>
-                  </div>
-                ),
-              },
-            ]}
-          />
-        )}
-      </section>
-
-      <section className="mt-5 space-y-2">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h3 className="text-lg font-bold">Retiros pendientes</h3>
           <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2">
@@ -269,7 +211,6 @@ export function AdminFinanceView() {
             rowKey={(row) => row.id}
             columns={[
               { key: "professional", title: "Profesional", render: (row) => <span className="font-semibold">{fullName(row.professional)}</span> },
-              { key: "amount", title: "Créditos", render: (row) => `${Number(row.credits).toFixed(2)} cr` },
               {
                 key: "currency",
                 title: "Moneda",
@@ -348,7 +289,6 @@ export function AdminFinanceView() {
             rowKey={(row) => row.id}
             columns={[
               { key: "professional", title: "Profesional", render: (row) => <span className="font-semibold">{fullName(row.professional)}</span> },
-              { key: "credits", title: "Créditos", render: (row) => Number(row.credits).toFixed(2) },
               {
                 key: "currency",
                 title: "Moneda",

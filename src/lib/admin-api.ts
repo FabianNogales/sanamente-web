@@ -1,8 +1,6 @@
 import { apiRequest, buildQueryString } from "./api-client";
 import type {
   AdminConfigPayload,
-  AdminDepositRecord,
-  AdminPackage,
   AdminPaginated,
   AdminProfessionalRecord,
   AdminReferralRecord,
@@ -12,7 +10,6 @@ import type {
   AdminUserRecord,
   AdminWithdrawalRecord,
   BonusTier,
-  PromotionalGrantRecord,
 } from "./admin-types";
 
 const DEFAULT_REFERRALS_PAGE = 1;
@@ -94,7 +91,7 @@ export async function getAdminProfessionalById(token: string, id: string): Promi
 export async function editAdminProfessional(
   token: string,
   id: string,
-  payload: { phoneNumber?: string; username?: string; bio?: string; rateCredits?: number; email?: string },
+  payload: { phoneNumber?: string; username?: string; bio?: string; email?: string },
 ) {
   return apiRequest(`/admin/professionals/${encodeURIComponent(id)}/edit`, {
     method: "PATCH",
@@ -192,40 +189,6 @@ export async function updateAdminWithdrawalStatus(
   });
 }
 
-export async function getAdminDeposits(
-  token: string,
-  search?: string,
-  cursor?: string,
-  limit = 20,
-): Promise<{ requests: AdminDepositRecord[]; nextCursor: string | null }> {
-  const query = buildQueryString({ search, cursor, limit });
-  const response = await apiRequest<{ requests?: any[]; nextCursor?: string | null }>(`/admin/deposits${query}`, {
-    method: "GET",
-    token,
-  });
-  const requests = Array.isArray(response.requests) ? response.requests : [];
-  return {
-    requests: requests.map((row) => ({
-      ...row,
-      amountBs: Number(row?.amountBs ?? row?.amount ?? 0),
-    })),
-    nextCursor: response.nextCursor ?? null,
-  };
-}
-
-export async function updateAdminDepositStatus(
-  token: string,
-  id: string,
-  status: "APPROVED" | "REJECTED",
-  rejectionReason?: string,
-) {
-  return apiRequest(`/admin/deposits/${encodeURIComponent(id)}/status`, {
-    method: "PATCH",
-    token,
-    body: JSON.stringify({ status, rejectionReason }),
-  });
-}
-
 export async function getAdminSpecialties(token: string, includeInactive = true, search?: string): Promise<AdminSpecialty[]> {
   const query = buildQueryString({ includeInactive: includeInactive ? "true" : "false", search });
   const response = await apiRequest<AdminSpecialty[]>(`/admin/specialties${query}`, { method: "GET", token });
@@ -275,27 +238,6 @@ export async function assignProfessionalSpecialtiesAdmin(token: string, userId: 
   });
 }
 
-export async function getPromotionalCreditGrants(
-  token: string,
-  limit = 100,
-  recipientUserId?: string,
-): Promise<PromotionalGrantRecord[]> {
-  const query = buildQueryString({ limit, recipientUserId });
-  const response = await apiRequest<PromotionalGrantRecord[]>(`/admin/promotional-credits/grants${query}`, {
-    method: "GET",
-    token,
-  });
-  return Array.isArray(response) ? response : [];
-}
-
-export async function grantPromotionalCredits(token: string, payload: { userId: string; amount: number; reason?: string }) {
-  return apiRequest(`/admin/promotional-credits/grants`, {
-    method: "POST",
-    token,
-    body: JSON.stringify(payload),
-  });
-}
-
 export async function getAdminReferrals(
   token: string,
   params?: {
@@ -335,19 +277,13 @@ export async function getAdminReferrals(
 
 export async function getAdminConfig(token: string): Promise<Required<AdminConfigPayload>> {
   const response = await apiRequest<any>("/admin/config", { method: "GET", token });
-  const creditValueBs = Number(response?.creditValueBs ?? response?.creditToSolesRate ?? 1);
 
   return {
     platformFeePercent: Number(response?.platformFeePercent ?? 50),
-    creditValueBs,
-    creditToSolesRate: creditValueBs,
     usdExchangeRate: Number(response?.usdExchangeRate ?? 6.96),
     minAppVersion: String(response?.minAppVersion ?? "1.0"),
     referralPercentage: Number(response?.referralPercentage ?? 2.5),
-    referralRewardCredits: Number(response?.referralRewardCredits ?? 10),
-    referralMinDepositAmount: Number(response?.referralMinDepositAmount ?? 0),
     referralEnabled: Boolean(response?.referralEnabled ?? true),
-    paymentsEnabled: Boolean(response?.paymentsEnabled ?? true),
     withdrawalsEnabled: Boolean(response?.withdrawalsEnabled ?? true),
   };
 }
@@ -396,44 +332,3 @@ export async function reverseAdminReferralReward(
   );
 }
 
-export async function getAdminPackages(token: string): Promise<AdminPackage[]> {
-  const response = await apiRequest<any[]>("/packages", { method: "GET", token });
-  const rows = Array.isArray(response) ? response : [];
-  return rows.map((row) => ({
-    id: String(row.id),
-    name: String(row.name),
-    credits: Number(row.credits ?? 0),
-    price: Number(row.price ?? 0),
-    isActive: Boolean(row.isActive ?? true),
-  }));
-}
-
-export async function createAdminPackage(
-  token: string,
-  payload: { name: string; credits: number; price: number; isActive?: boolean },
-) {
-  return apiRequest("/packages/create", {
-    method: "POST",
-    token,
-    body: JSON.stringify(payload),
-  });
-}
-
-export async function updateAdminPackage(
-  token: string,
-  id: string,
-  payload: { name?: string; credits?: number; price?: number; isActive?: boolean },
-) {
-  return apiRequest(`/packages/${encodeURIComponent(id)}`, {
-    method: "PATCH",
-    token,
-    body: JSON.stringify(payload),
-  });
-}
-
-export async function deleteAdminPackage(token: string, id: string) {
-  await apiRequest(`/packages/${encodeURIComponent(id)}`, {
-    method: "DELETE",
-    token,
-  });
-}

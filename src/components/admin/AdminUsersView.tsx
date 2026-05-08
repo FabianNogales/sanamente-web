@@ -201,7 +201,6 @@ export function AdminUsersView() {
                   <AdminStatusBadge label={row.isActive ? "ACTIVO" : "BLOQUEADO"} tone={row.isActive ? "positive" : "danger"} />
                 ),
               },
-              { key: "credits", title: "Créditos", render: (row) => <span className="font-semibold text-indigo-600">{Number(row.wallet?.balance ?? 0).toFixed(0)} cr</span> },
               { key: "joined", title: "Registro", render: (row) => formatDate(row.createdAt) },
               {
                 key: "actions",
@@ -263,7 +262,6 @@ export function AdminUsersView() {
                 <p><strong>Referral code:</strong> {selectedUser.referralCode ?? "-"}</p>
                 <p><strong>Username:</strong> {selectedUser.userProfile?.userName ?? "-"}</p>
                 <p><strong>Bio:</strong> {selectedUser.userProfile?.bio ?? "-"}</p>
-                <p><strong>Saldo:</strong> {Number(selectedUser.wallet?.balance ?? 0).toFixed(2)} créditos</p>
                 <p><strong>Registro:</strong> {formatDate(selectedUser.createdAt)}</p>
               </div>
             )}

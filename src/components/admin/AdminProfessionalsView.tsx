@@ -58,7 +58,6 @@ export function AdminProfessionalsView() {
   const [editEmail, setEditEmail] = useState("");
   const [editUsername, setEditUsername] = useState("");
   const [editBio, setEditBio] = useState("");
-  const [editRate, setEditRate] = useState("");
   const [editFirstName, setEditFirstName] = useState("");
   const [editLastName, setEditLastName] = useState("");
 
@@ -140,18 +139,12 @@ export function AdminProfessionalsView() {
     setEditEmail(row.email ?? "");
     setEditUsername(row.professionalProfile?.username ?? "");
     setEditBio(row.professionalProfile?.bio ?? "");
-    setEditRate(String(Number(row.professionalProfile?.rateCredits ?? 0)));
     setEditFirstName(row.firstName ?? "");
     setEditLastName(row.lastName ?? "");
   }
 
   async function handleSaveEdit() {
     if (!token || !editingProfessional) return;
-    const rateCredits = Number(editRate);
-    if (!Number.isFinite(rateCredits) || rateCredits < 0) {
-      window.alert("La tarifa base debe ser un número mayor o igual a 0.");
-      return;
-    }
     try {
       setSavingEdit(true);
       await editAdminProfessional(token!, editingProfessional.id, {
@@ -159,7 +152,6 @@ export function AdminProfessionalsView() {
         email: editEmail.trim() || undefined,
         username: editUsername.trim() || undefined,
         bio: editBio.trim() || undefined,
-        rateCredits,
       });
       await updateAdminProfessionalProfile(token!, editingProfessional.id, {
         firstName: editFirstName.trim() || undefined,
@@ -289,7 +281,6 @@ export function AdminProfessionalsView() {
                 title: "Estado",
                 render: (row) => <AdminStatusBadge label={row.isActive ? "APROBADO" : "REVISIÓN"} tone={row.isActive ? "positive" : "warning"} />,
               },
-              { key: "earnings", title: "Ganancias", render: (row) => <span className="font-semibold text-emerald-700">{Number(row.wallet?.balance ?? 0).toFixed(2)} cr</span> },
               {
                 key: "docs",
                 title: "Docs",
@@ -387,7 +378,6 @@ export function AdminProfessionalsView() {
               <input value={editPhone} onChange={(event) => setEditPhone(event.target.value)} className="h-10 rounded-lg border border-slate-300 px-3 text-sm" placeholder="Teléfono" />
               <input value={editEmail} onChange={(event) => setEditEmail(event.target.value)} className="h-10 rounded-lg border border-slate-300 px-3 text-sm" placeholder="Email" />
               <input value={editUsername} onChange={(event) => setEditUsername(event.target.value)} className="h-10 rounded-lg border border-slate-300 px-3 text-sm" placeholder="Username" />
-              <input value={editRate} onChange={(event) => setEditRate(event.target.value)} className="h-10 rounded-lg border border-slate-300 px-3 text-sm" placeholder="Tarifa base (cr)" />
               <textarea value={editBio} onChange={(event) => setEditBio(event.target.value)} className="min-h-24 rounded-lg border border-slate-300 px-3 py-2 text-sm" placeholder="Bio" />
             </div>
             <div className="mt-3 flex items-center justify-end gap-2">

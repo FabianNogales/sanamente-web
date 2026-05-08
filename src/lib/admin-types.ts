@@ -103,24 +103,6 @@ export type AdminWithdrawalRecord = {
   updatedAt?: string | null;
 };
 
-export type AdminDepositRecord = {
-  id: string;
-  userId: string;
-  amountBs: number;
-  creditsToDeliver: number;
-  packageNameAtMoment?: string;
-  status: "PENDING" | "APPROVED" | "REJECTED";
-  rejectionReason?: string | null;
-  createdAt: string;
-  receiptUrl?: string | null;
-  user: {
-    firstName: string | null;
-    lastName: string | null;
-    email: string | null;
-    phoneNumber: string;
-  };
-};
-
 export type AdminSpecialty = {
   id: string;
   name: string;
@@ -129,26 +111,6 @@ export type AdminSpecialty = {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-};
-
-export type PromotionalGrantRecord = {
-  id: string;
-  amount: number;
-  reason: string | null;
-  createdAt: string;
-  admin: {
-    id: string;
-    firstName: string | null;
-    lastName: string | null;
-    email: string | null;
-  };
-  recipient: {
-    id: string;
-    firstName: string | null;
-    lastName: string | null;
-    email: string | null;
-  };
-  transactionId: string;
 };
 
 export type AdminReferralRecord = {
@@ -195,15 +157,10 @@ export type AdminReferralsResponse = {
 
 export type AdminConfigPayload = {
   platformFeePercent?: number;
-  creditValueBs?: number;
-  creditToSolesRate?: number;
   usdExchangeRate?: number;
   minAppVersion?: string;
   referralPercentage?: number;
-  referralRewardCredits?: number;
-  referralMinDepositAmount?: number;
   referralEnabled?: boolean;
-  paymentsEnabled?: boolean;
   withdrawalsEnabled?: boolean;
 };
 
@@ -215,10 +172,4 @@ export type BonusTier = {
   isActive: boolean;
 };
 
-export type AdminPackage = {
-  id: string;
-  name: string;
-  credits: number;
-  price: number;
-  isActive: boolean;
-};
+;
