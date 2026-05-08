@@ -80,6 +80,9 @@ export function AdminConfigView() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <label className="text-sm">Comisión de plataforma (%)
             <input value={platformFeePercent} onChange={(e) => setPlatformFeePercent(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-slate-300 px-3 text-sm" />
+            <span className="mt-1 block text-xs text-slate-500">
+              Porcentaje retenido por SanaMente en cada booking pagado; el profesional recibe el porcentaje restante.
+            </span>
           </label>
           <label className="text-sm">Tipo de cambio USD → Bs (retiros en dólares)
             <input value={usdExchangeRate} onChange={(e) => setUsdExchangeRate(e.target.value)} className="mt-1 h-10 w-full rounded-lg border border-slate-300 px-3 text-sm" placeholder="Ej: 6.96" />
@@ -101,5 +104,6 @@ export function AdminConfigView() {
     </AdminShell>
   );
 }
+
 
 
