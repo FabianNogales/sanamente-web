@@ -172,4 +172,18 @@ export type BonusTier = {
   isActive: boolean;
 };
 
-;
+export type AdminPackage = {
+  id: string;
+  name: string;
+  credits: number;
+  price: number;
+  isActive: boolean;
+  createdAt?: string;
+};
+
+export type AdminPackagePayload = {
+  name: string;
+  credits: number;
+  price: number;
+  isActive?: boolean;
+};

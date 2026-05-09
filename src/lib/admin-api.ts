@@ -1,6 +1,8 @@
 import { apiRequest, buildQueryString } from "./api-client";
 import type {
   AdminConfigPayload,
+  AdminPackage,
+  AdminPackagePayload,
   AdminPaginated,
   AdminProfessionalRecord,
   AdminReferralRecord,
@@ -332,3 +334,27 @@ export async function reverseAdminReferralReward(
   );
 }
 
+export async function getAdminPackages(token: string): Promise<AdminPackage[]> {
+  const response = await apiRequest<AdminPackage[]>("/packages", { method: "GET", token });
+  return Array.isArray(response) ? response : [];
+}
+
+export async function createAdminPackage(token: string, data: AdminPackagePayload): Promise<AdminPackage> {
+  return apiRequest<AdminPackage>("/packages/create", {
+    method: "POST",
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export async function updateAdminPackage(token: string, id: string, data: Partial<AdminPackagePayload>): Promise<AdminPackage> {
+  return apiRequest<AdminPackage>(`/packages/${encodeURIComponent(id)}`, {
+    method: "PATCH",
+    token,
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteAdminPackage(token: string, id: string): Promise<void> {
+  await apiRequest(`/packages/${encodeURIComponent(id)}`, { method: "DELETE", token });
+}
