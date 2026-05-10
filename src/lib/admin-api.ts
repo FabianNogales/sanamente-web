@@ -335,7 +335,7 @@ export async function reverseAdminReferralReward(
 }
 
 export async function getAdminPackages(token: string): Promise<AdminPackage[]> {
-  const response = await apiRequest<AdminPackage[]>("/packages", { method: "GET", token });
+  const response = await apiRequest<AdminPackage[]>("/packages/admin/all", { method: "GET", token });
   return Array.isArray(response) ? response : [];
 }
 
