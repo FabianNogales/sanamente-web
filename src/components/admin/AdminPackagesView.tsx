@@ -78,7 +78,6 @@ export function AdminPackagesView() {
   function handleSaveRequest() {
     if (!token) return;
     if (form.name.trim().length < 3) return window.alert("El nombre debe tener al menos 3 caracteres.");
-    if (form.credits <= 0) return window.alert("Los créditos deben ser mayor a 0.");
     if (form.price <= 0) return window.alert("El precio debe ser mayor a 0.");
     if (editingId) {
       setConfirmEditOpen(true);
@@ -150,7 +149,7 @@ export function AdminPackagesView() {
   if (guardLoading) return <main className="min-h-screen bg-slate-100 p-6 text-slate-700">Validando sesión admin...</main>;
 
   return (
-    <AdminShell title="Paquetes" subtitle="Gestión de paquetes de créditos para usuarios">
+    <AdminShell title="Paquetes" subtitle="Gestión de paquetes para recargar billetera de usuarios">
       {error ? <p className="mb-4 text-sm text-rose-600">{error}</p> : null}
 
       {/* Toolbar */}

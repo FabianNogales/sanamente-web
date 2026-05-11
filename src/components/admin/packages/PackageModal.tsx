@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { X, Save, Package, Coins, DollarSign, Tag, Sparkles, ArrowRight } from "lucide-react";
+import { X, Save, Package, DollarSign, Tag, Sparkles, ArrowRight } from "lucide-react";
 import type { AdminPackagePayload } from "@/lib/admin-types";
 
 type Props = {
@@ -106,36 +106,20 @@ export function PackageModal({
             />
           </div>
 
-          {/* Créditos y Precio */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                <Coins size={12} /> Créditos
-              </label>
-              <input
-                type="number"
-                min={1}
-                className="w-full h-12 rounded-2xl border-2 border-slate-100 bg-slate-50 px-4 text-sm font-semibold text-slate-800 placeholder:text-slate-300 focus:outline-none focus:border-indigo-400 focus:bg-white transition-all"
-                value={form.credits}
-                onChange={(e) => onChange({ ...form, credits: Math.floor(Number(e.target.value)) })}
-                placeholder="100"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
-                <DollarSign size={12} /> Precio BOB
-              </label>
-              <input
-                type="number"
-                min={0.01}
-                step={0.01}
-                className="w-full h-12 rounded-2xl border-2 border-slate-100 bg-slate-50 px-4 text-sm font-semibold text-slate-800 placeholder:text-slate-300 focus:outline-none focus:border-indigo-400 focus:bg-white transition-all"
-                value={form.price}
-                onChange={(e) => onChange({ ...form, price: Number(e.target.value) })}
-                placeholder="70.00"
-              />
-            </div>
+          {/* Precio */}
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
+              <DollarSign size={12} /> Precio BOB
+            </label>
+            <input
+              type="number"
+              min={0.01}
+              step={0.01}
+              className="w-full h-12 rounded-2xl border-2 border-slate-100 bg-slate-50 px-4 text-sm font-semibold text-slate-800 placeholder:text-slate-300 focus:outline-none focus:border-indigo-400 focus:bg-white transition-all"
+              value={form.price}
+              onChange={(e) => onChange({ ...form, price: Number(e.target.value) })}
+              placeholder="70.00"
+            />
           </div>
 
           {/* Preview USD */}

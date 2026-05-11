@@ -1,4 +1,4 @@
-import { Pencil, Trash2, Coins, TrendingUp, DollarSign } from "lucide-react";
+import { Pencil, Trash2, DollarSign } from "lucide-react";
 import type { AdminPackage } from "@/lib/admin-types";
 
 const CARD_ACCENTS = [
@@ -39,9 +39,6 @@ export function PackageCard({ pkg, index, priceUsd, onEdit, onDelete }: Props) {
             <span className={`w-1.5 h-1.5 rounded-full ${pkg.isActive ? "bg-green-300" : "bg-white/40"}`} />
             {pkg.isActive ? "Activo" : "Inactivo"}
           </span>
-          <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-            <Coins size={20} color="white" />
-          </div>
         </div>
 
         <div className="relative">
@@ -50,24 +47,8 @@ export function PackageCard({ pkg, index, priceUsd, onEdit, onDelete }: Props) {
         </div>
       </div>
 
-      {/* Chip créditos flotante */}
-      <div className="relative px-6">
-        <div
-          className="absolute -top-5 left-6 right-6 rounded-2xl px-4 py-3 flex items-center justify-between shadow-lg"
-          style={{ backgroundColor: accent.light, border: `1px solid ${accent.text}20` }}
-        >
-          <div className="flex items-center gap-2">
-            <TrendingUp size={16} color={accent.text} />
-            <span className="text-xs font-semibold" style={{ color: accent.text }}>Créditos incluidos</span>
-          </div>
-          <span className="text-lg font-black" style={{ color: accent.text }}>
-            {pkg.credits.toLocaleString()}
-          </span>
-        </div>
-      </div>
-
       {/* Precios */}
-      <div className="px-6 pt-10 pb-5 space-y-3">
+      <div className="px-6 pt-6 pb-5 space-y-3">
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-2xl bg-slate-50 border border-slate-100 px-4 py-3">
             <p className="text-xs text-slate-400 font-medium mb-1">Precio BOB</p>
