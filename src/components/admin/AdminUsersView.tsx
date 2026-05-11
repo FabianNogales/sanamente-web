@@ -259,6 +259,8 @@ export function AdminUsersView() {
                 <p><strong>País:</strong> {selectedUser.phoneCountryName ?? "-"}</p>
                 <p><strong>Billing region:</strong> {selectedUser.billingRegion ?? "-"}</p>
                 <p><strong>Moneda preferida:</strong> {selectedUser.preferredCurrency ?? "-"}</p>
+                <p><strong>Wallet BOB:</strong> {`Bs ${Number(selectedUser.wallet?.balance ?? 0).toFixed(2)}`}</p>
+                <p><strong>Wallet USD:</strong> {`$ ${Number(selectedUser.wallet?.balanceUsd ?? 0).toFixed(2)}`}</p>
                 <p><strong>Referral code:</strong> {selectedUser.referralCode ?? "-"}</p>
                 <p><strong>Username:</strong> {selectedUser.userProfile?.userName ?? "-"}</p>
                 <p><strong>Bio:</strong> {selectedUser.userProfile?.bio ?? "-"}</p>

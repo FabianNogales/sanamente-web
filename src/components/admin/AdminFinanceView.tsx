@@ -27,6 +27,10 @@ function moneyUsd(value: number) {
   return `$ ${Number(value || 0).toFixed(2)}`;
 }
 
+function moneyByCurrency(value: number, currency?: string | null) {
+  return (currency ?? "BOB").toUpperCase() === "USD" ? `${moneyUsd(value)} USD` : `${moneyBs(value)} BOB`;
+}
+
 export function AdminFinanceView() {
   const { loading: guardLoading, token } = useAdminGuard();
   const [loading, setLoading] = useState(true);
@@ -371,7 +375,7 @@ export function AdminFinanceView() {
           <div className="w-full max-w-xl rounded-xl border border-slate-200 bg-white p-4 space-y-3">
             <h3 className="text-lg font-bold">Rechazar retiro</h3>
             <p className="text-sm text-slate-600">
-              {fullName(rejectionTarget.professional)} - {moneyBs(Number(rejectionTarget.amountBs ?? rejectionTarget.soles ?? 0))}
+              {fullName(rejectionTarget.professional)} - {moneyByCurrency(Number(rejectionTarget.amountBs ?? rejectionTarget.soles ?? 0), rejectionTarget.currency)}
             </p>
             <textarea
               value={rejectionReason}

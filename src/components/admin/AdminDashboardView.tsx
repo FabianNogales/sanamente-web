@@ -16,6 +16,13 @@ function money(value: number) {
   return `Bs ${Math.round(value).toLocaleString()}`;
 }
 
+function moneyByCurrency(value: number, currency?: string | null) {
+  if ((currency ?? "").toUpperCase() === "USD") {
+    return `$ ${Number(value || 0).toFixed(2)} USD`;
+  }
+  return `Bs ${Number(value || 0).toFixed(2)} BOB`;
+}
+
 export function AdminDashboardView() {
   const { loading: guardLoading, token } = useAdminGuard();
   const [loading, setLoading] = useState(true);
@@ -67,7 +74,7 @@ export function AdminDashboardView() {
         }
 
         if (!active) return;
-        if (failures.length > 0) setError(`Dashboard cargado parcialmente. Falló: ${failures.join(", ")}`);
+        if (failures.length > 0) setError(`Dashboard cargado parcialmente. Fallo: ${failures.join(", ")}`);
       } catch {
         if (!active) return;
         setError("No se pudo cargar el dashboard principal.");
@@ -101,7 +108,7 @@ export function AdminDashboardView() {
   }, [stats, paidToProfessionals]);
 
   if (guardLoading) {
-    return <main className="min-h-screen bg-slate-100 p-6 text-slate-700">Validando sesión admin...</main>;
+    return <main className="min-h-screen bg-slate-100 p-6 text-slate-700">Validando sesion admin...</main>;
   }
 
   return (
@@ -120,18 +127,18 @@ export function AdminDashboardView() {
 
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-5">
         <article className="rounded-xl border border-slate-200 p-4">
-          <h3 className="text-lg font-bold">Profesionales en revisión</h3>
-          <p className="text-sm text-slate-500 mt-1">Cuentas pendientes de validación administrativa.</p>
+          <h3 className="text-lg font-bold">Profesionales en revision</h3>
+          <p className="text-sm text-slate-500 mt-1">Cuentas pendientes de validacion administrativa.</p>
           <div className="mt-3 space-y-2">
             {pendingProfessionals.length === 0 ? (
-              <AdminEmptyState title="Sin pendientes" description="No hay profesionales en revisión." />
+              <AdminEmptyState title="Sin pendientes" description="No hay profesionales en revision." />
             ) : (
               pendingProfessionals.map((item) => (
                 <div key={item.id} className="rounded-lg border border-slate-200 p-3">
                   <p className="font-semibold text-slate-900">{fullName(item.firstName, item.lastName)}</p>
                   <p className="text-sm text-slate-500">{item.email ?? item.phoneNumber}</p>
                   <div className="mt-2">
-                    <AdminStatusBadge label={item.isActive ? "ACTIVO" : "REVISIÓN"} tone={item.isActive ? "positive" : "warning"} />
+                    <AdminStatusBadge label={item.isActive ? "ACTIVO" : "REVISION"} tone={item.isActive ? "positive" : "warning"} />
                   </div>
                 </div>
               ))
@@ -141,7 +148,7 @@ export function AdminDashboardView() {
 
         <article className="rounded-xl border border-slate-200 p-4">
           <h3 className="text-lg font-bold">Retiros pendientes</h3>
-          <p className="text-sm text-slate-500 mt-1">Solicitudes en espera de aprobación financiera.</p>
+          <p className="text-sm text-slate-500 mt-1">Solicitudes en espera de aprobacion financiera.</p>
           <div className="mt-3 space-y-2">
             {pendingWithdrawals.length === 0 ? (
               <AdminEmptyState title="Sin retiros pendientes" description="No hay solicitudes en espera." />
@@ -150,7 +157,7 @@ export function AdminDashboardView() {
                 <div key={item.id} className="rounded-lg border border-slate-200 p-3">
                   <p className="font-semibold text-slate-900">{fullName(item.professional?.firstName, item.professional?.lastName)}</p>
                   <p className="text-sm text-slate-500">
-                    {Number(item.credits).toFixed(2)} cr · Bs {Number(item.amountBs ?? item.soles ?? 0).toFixed(2)}
+                    Monto solicitado: {moneyByCurrency(Number(item.amountBs ?? item.soles ?? 0), item.currency)}
                   </p>
                   <div className="mt-2">
                     <AdminStatusBadge label="PENDIENTE" tone="warning" />

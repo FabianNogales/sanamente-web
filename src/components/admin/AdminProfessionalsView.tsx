@@ -295,6 +295,16 @@ export function AdminProfessionalsView() {
                   );
                 },
               },
+              {
+                key: "wallet",
+                title: "Wallet",
+                render: (row) => (
+                  <div className="text-xs">
+                    <p className="text-slate-700">BOB: Bs {Number(row.wallet?.balance ?? 0).toFixed(2)}</p>
+                    <p className="text-slate-700">USD: $ {Number(row.wallet?.balanceUsd ?? 0).toFixed(2)}</p>
+                  </div>
+                ),
+              },
               { key: "joined", title: "Registro", render: (row) => formatDate(row.createdAt) },
               {
                 key: "actions",

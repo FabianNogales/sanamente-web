@@ -43,7 +43,7 @@ export type AdminUserRecord = {
     bio?: string | null;
     avatarUrl?: string | null;
   } | null;
-  wallet?: { balance: number } | null;
+  wallet?: { balance: number; balanceUsd?: number } | null;
 };
 
 export type AdminProfessionalRecord = {
@@ -54,7 +54,7 @@ export type AdminProfessionalRecord = {
   phoneNumber: string;
   isActive: boolean;
   createdAt: string;
-  wallet?: { balance: number } | null;
+  wallet?: { balance: number; balanceUsd?: number } | null;
   professionalProfile?: {
     username?: string;
     avatarUrl?: string | null;
