@@ -26,6 +26,7 @@ export function Navbar() {
           <a href="#como-funciona" className="hover:text-indigo-600 transition-colors">Cómo funciona</a>
           <a href="#profesionales" className="hover:text-indigo-600 transition-colors">Profesionales</a>
           <a href="#creditos" className="hover:text-indigo-600 transition-colors">Planes</a>
+          <a href="#descargar" className="hover:text-indigo-600 transition-colors">Descargar app</a>
           <a href="#contacto" className="hover:text-indigo-600 transition-colors">Contacto</a>
         </div>
 
@@ -69,6 +70,7 @@ export function Navbar() {
           <a href="#como-funciona" onClick={() => setOpen(false)} className="py-3 text-slate-600 font-medium text-sm border-b border-slate-50 hover:text-indigo-600 transition-colors">Cómo funciona</a>
           <a href="#profesionales" onClick={() => setOpen(false)} className="py-3 text-slate-600 font-medium text-sm border-b border-slate-50 hover:text-indigo-600 transition-colors">Profesionales</a>
           <a href="#creditos" onClick={() => setOpen(false)} className="py-3 text-slate-600 font-medium text-sm border-b border-slate-50 hover:text-indigo-600 transition-colors">Planes</a>
+          <a href="#descargar" onClick={() => setOpen(false)} className="py-3 text-slate-600 font-medium text-sm border-b border-slate-50 hover:text-indigo-600 transition-colors">Descargar app</a>
           <a href="#contacto" onClick={() => setOpen(false)} className="py-3 text-slate-600 font-medium text-sm border-b border-slate-50 hover:text-indigo-600 transition-colors">Contacto</a>
           <div className="flex flex-col gap-2 pt-3">
             <Link href={LINKS.login} onClick={() => setOpen(false)} className="w-full text-center border border-slate-200 text-slate-700 font-semibold text-sm py-3 rounded-xl hover:bg-slate-50 transition-colors">

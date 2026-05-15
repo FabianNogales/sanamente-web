@@ -5,6 +5,7 @@ import { Features } from "@/sections/Features";
 import { Profesionales } from "@/sections/Profesionales";
 import { Creditos } from "@/sections/Creditos";
 import { ContactoSection } from "@/sections/ContactoSection";
+import { Descargar } from "@/sections/Descargar";
 import { CTAFinal } from "@/sections/CTAFinal";
 import { Footer } from "@/sections/Footer";
 
@@ -17,6 +18,7 @@ export default function HomePage() {
       <Features />
       <Profesionales />
       <Creditos />
+      <Descargar />
       <ContactoSection />
       <CTAFinal />
       <Footer />
