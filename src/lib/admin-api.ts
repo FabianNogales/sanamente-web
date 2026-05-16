@@ -175,6 +175,7 @@ export async function updateAdminWithdrawalStatus(
     status: "APPROVED" | "REJECTED";
     rejectionReason?: string;
     notes?: string;
+    txId?: string;
     receipt?: { file: File };
   },
 ) {
@@ -182,6 +183,7 @@ export async function updateAdminWithdrawalStatus(
   form.append("status", payload.status);
   if (payload.rejectionReason) form.append("rejectionReason", payload.rejectionReason);
   if (payload.notes) form.append("notes", payload.notes);
+  if (payload.txId) form.append("txId", payload.txId);
   if (payload.receipt?.file) form.append("receipt", payload.receipt.file);
 
   return apiRequest(`/admin/payment-requests/${encodeURIComponent(id)}/status`, {

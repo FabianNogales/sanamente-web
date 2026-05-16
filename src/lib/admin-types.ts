@@ -88,9 +88,13 @@ export type AdminWithdrawalRecord = {
   notes?: string | null;
   rejectionReason?: string | null;
   receiptUrl?: string | null;
+  method?: "BANK_TRANSFER" | "CRYPTO" | null;
   bankName: string;
   accountNumber: string;
   accountHolderName?: string | null;
+  cryptoAddress?: string | null;
+  cryptoCurrency?: string | null;
+  cryptoNetwork?: string | null;
   professional: {
     id: string;
     firstName: string | null;
