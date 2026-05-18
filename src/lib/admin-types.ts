@@ -119,7 +119,8 @@ export type AdminSpecialty = {
 
 export type AdminReferralRecord = {
   id: string;
-  status: "PENDING" | "QUALIFIED" | "REWARDED";
+  status: "PENDING" | "ACTIVE" | "QUALIFIED" | "REWARDED";
+  validPurchasesCount?: number;
   codeUsed: string;
   rewardCredits: number;
   createdAt: string;
@@ -153,6 +154,7 @@ export type AdminReferralsResponse = {
   summary: {
     total: number;
     pending: number;
+    active?: number;
     qualified: number;
     rewarded: number;
     totalRewardCredits: number;
@@ -165,6 +167,11 @@ export type AdminConfigPayload = {
   minAppVersion?: string;
   referralPercentage?: number;
   referralEnabled?: boolean;
+  referralValidPurchasesRequired?: number;
+  referralThreshold?: number;
+  referralClientDiscountPercent?: number;
+  referralClientDiscountSessions?: number;
+  referralProfessionalRewardPercent?: number;
   withdrawalsEnabled?: boolean;
 };
 

@@ -272,6 +272,7 @@ export async function getAdminReferrals(
     summary: {
       total: Number(response?.summary?.total ?? 0),
       pending: Number(response?.summary?.pending ?? 0),
+      active: Number(response?.summary?.active ?? 0),
       qualified: Number(response?.summary?.qualified ?? 0),
       rewarded: Number(response?.summary?.rewarded ?? 0),
       totalRewardCredits: Number(response?.summary?.totalRewardCredits ?? 0),
@@ -288,6 +289,11 @@ export async function getAdminConfig(token: string): Promise<Required<AdminConfi
     minAppVersion: String(response?.minAppVersion ?? "1.0"),
     referralPercentage: Number(response?.referralPercentage ?? 2.5),
     referralEnabled: Boolean(response?.referralEnabled ?? true),
+    referralValidPurchasesRequired: Number(response?.referralValidPurchasesRequired ?? 1),
+    referralThreshold: Number(response?.referralThreshold ?? 10),
+    referralClientDiscountPercent: Number(response?.referralClientDiscountPercent ?? 5),
+    referralClientDiscountSessions: Number(response?.referralClientDiscountSessions ?? 10),
+    referralProfessionalRewardPercent: Number(response?.referralProfessionalRewardPercent ?? 5),
     withdrawalsEnabled: Boolean(response?.withdrawalsEnabled ?? true),
   };
 }
