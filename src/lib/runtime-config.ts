@@ -23,4 +23,4 @@ export const API_BASE_URL = normalizeBaseUrl(
 );
 
 export const MOBILE_APP_URL =
-  process.env.NEXT_PUBLIC_MOBILE_APP_URL ?? "";
+  process.env.NEXT_PUBLIC_APK_URL ?? "";
