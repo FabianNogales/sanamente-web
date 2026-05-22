@@ -14,6 +14,7 @@ const navItems = [
   { href: "/admin/finance", label: "Finanzas" },
   { href: "/admin/packages", label: "Paquetes" },
   { href: "/admin/referrals", label: "Referidos" },
+  { href: "/admin/reviews", label: "Reseñas" },
   { href: "/admin/sections", label: "Secciones" },
   { href: "/admin/config", label: "Configuración" },
   { href: "/admin/reports", label: "Reportes" },

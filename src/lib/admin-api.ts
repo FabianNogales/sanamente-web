@@ -7,6 +7,7 @@ import type {
   AdminProfessionalRecord,
   AdminReferralRecord,
   AdminReferralsResponse,
+  AdminReviewRecord,
   AdminSpecialty,
   AdminStatsResponse,
   AdminUserRecord,
@@ -365,4 +366,18 @@ export async function updateAdminPackage(token: string, id: string, data: Partia
 
 export async function deleteAdminPackage(token: string, id: string): Promise<void> {
   await apiRequest(`/packages/${encodeURIComponent(id)}`, { method: "DELETE", token });
+}
+
+export async function getAdminReviews(
+  token: string,
+  page = 1,
+  limit = 50,
+  search?: string,
+): Promise<{ data: AdminReviewRecord[]; total: number; page: number; limit: number }> {
+  const query = buildQueryString({ page, limit, search });
+  return apiRequest(`/reviews/admin/all${query}`, { method: "GET", token });
+}
+
+export async function deleteAdminReview(token: string, id: string): Promise<void> {
+  await apiRequest(`/reviews/${encodeURIComponent(id)}`, { method: "DELETE", token });
 }

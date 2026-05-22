@@ -198,3 +198,20 @@ export type AdminPackagePayload = {
   price: number;
   isActive?: boolean;
 };
+
+export type AdminReviewRecord = {
+  id: string;
+  rating: number;
+  comment: string | null;
+  createdAt: string;
+  client: {
+    id: string;
+    name: string;
+    avatarUrl: string | null;
+  };
+  professional: {
+    id: string;
+    name: string;
+    avatarUrl: string | null;
+  };
+};
