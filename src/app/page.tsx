@@ -1,12 +1,8 @@
 import { Navbar } from "@/sections/Navbar";
 import { Hero } from "@/sections/Hero";
 import { ComoFunciona } from "@/sections/ComoFunciona";
-import { Features } from "@/sections/Features";
-import { Profesionales } from "@/sections/Profesionales";
-import { Creditos } from "@/sections/Creditos";
+import { VideoSection } from "@/sections/VideoSection";
 import { ContactoSection } from "@/sections/ContactoSection";
-import { Descargar } from "@/sections/Descargar";
-import { CTAFinal } from "@/sections/CTAFinal";
 import { Footer } from "@/sections/Footer";
 
 export default function HomePage() {
@@ -15,12 +11,8 @@ export default function HomePage() {
       <Navbar />
       <Hero />
       <ComoFunciona />
-      <Features />
-      <Profesionales />
-      <Creditos />
-      <Descargar />
+      <VideoSection />
       <ContactoSection />
-      <CTAFinal />
       <Footer />
     </main>
   );
