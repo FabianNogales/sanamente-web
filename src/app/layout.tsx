@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { AppDownloadButton } from "@/components/AppDownloadButton";
 
 export const metadata: Metadata = {
   title: "Sanamente — Atención psicológica profesional",
@@ -13,6 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es">
       <body className="min-h-screen bg-white text-slate-900 antialiased">
         {children}
+        <AppDownloadButton />
       </body>
     </html>
   );

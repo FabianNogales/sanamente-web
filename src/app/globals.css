@@ -32,6 +32,11 @@ body {
   display: none;
 }
 
+.bg-dot-pattern {
+  background-image: radial-gradient(circle, #c7d2fe 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
 @keyframes shrink {
   from { width: 100%; }
   to { width: 0%; }

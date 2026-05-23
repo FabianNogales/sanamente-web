@@ -7,6 +7,7 @@ import type {
   AdminProfessionalRecord,
   AdminReferralRecord,
   AdminReferralsResponse,
+  AdminReviewRecord,
   AdminSpecialty,
   AdminStatsResponse,
   AdminUserRecord,
@@ -175,6 +176,7 @@ export async function updateAdminWithdrawalStatus(
     status: "APPROVED" | "REJECTED";
     rejectionReason?: string;
     notes?: string;
+    txId?: string;
     receipt?: { file: File };
   },
 ) {
@@ -182,6 +184,7 @@ export async function updateAdminWithdrawalStatus(
   form.append("status", payload.status);
   if (payload.rejectionReason) form.append("rejectionReason", payload.rejectionReason);
   if (payload.notes) form.append("notes", payload.notes);
+  if (payload.txId) form.append("txId", payload.txId);
   if (payload.receipt?.file) form.append("receipt", payload.receipt.file);
 
   return apiRequest(`/admin/payment-requests/${encodeURIComponent(id)}/status`, {
@@ -270,6 +273,7 @@ export async function getAdminReferrals(
     summary: {
       total: Number(response?.summary?.total ?? 0),
       pending: Number(response?.summary?.pending ?? 0),
+      active: Number(response?.summary?.active ?? 0),
       qualified: Number(response?.summary?.qualified ?? 0),
       rewarded: Number(response?.summary?.rewarded ?? 0),
       totalRewardCredits: Number(response?.summary?.totalRewardCredits ?? 0),
@@ -286,6 +290,11 @@ export async function getAdminConfig(token: string): Promise<Required<AdminConfi
     minAppVersion: String(response?.minAppVersion ?? "1.0"),
     referralPercentage: Number(response?.referralPercentage ?? 2.5),
     referralEnabled: Boolean(response?.referralEnabled ?? true),
+    referralValidPurchasesRequired: Number(response?.referralValidPurchasesRequired ?? 1),
+    referralThreshold: Number(response?.referralThreshold ?? 10),
+    referralClientDiscountPercent: Number(response?.referralClientDiscountPercent ?? 5),
+    referralClientDiscountSessions: Number(response?.referralClientDiscountSessions ?? 10),
+    referralProfessionalRewardPercent: Number(response?.referralProfessionalRewardPercent ?? 5),
     withdrawalsEnabled: Boolean(response?.withdrawalsEnabled ?? true),
   };
 }
@@ -357,4 +366,18 @@ export async function updateAdminPackage(token: string, id: string, data: Partia
 
 export async function deleteAdminPackage(token: string, id: string): Promise<void> {
   await apiRequest(`/packages/${encodeURIComponent(id)}`, { method: "DELETE", token });
+}
+
+export async function getAdminReviews(
+  token: string,
+  page = 1,
+  limit = 50,
+  search?: string,
+): Promise<{ data: AdminReviewRecord[]; total: number; page: number; limit: number }> {
+  const query = buildQueryString({ page, limit, search });
+  return apiRequest(`/reviews/admin/all${query}`, { method: "GET", token });
+}
+
+export async function deleteAdminReview(token: string, id: string): Promise<void> {
+  await apiRequest(`/reviews/${encodeURIComponent(id)}`, { method: "DELETE", token });
 }
