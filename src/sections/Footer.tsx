@@ -88,6 +88,7 @@ export function Footer() {
                 { label: "Términos y Condiciones", href: "/terminos" },
                 { label: "Política de Privacidad", href: "/privacidad" },
                 { label: "Política de Cookies", href: "/cookies" },
+                { label: "Eliminar mi cuenta", href: "/borrar-cuenta" },
               ].map((l) => (
                 <li key={l.href}>
                   <Link href={l.href} className="text-slate-500 hover:text-indigo-600 text-sm transition-colors">
@@ -129,6 +130,8 @@ export function Footer() {
             <Link href="/privacidad" className="text-slate-400 hover:text-slate-600 text-xs transition-colors">Privacidad</Link>
             <span className="text-slate-200">·</span>
             <Link href="/contacto" className="text-slate-400 hover:text-slate-600 text-xs transition-colors">Contacto</Link>
+            <span className="text-slate-200">·</span>
+            <Link href="/borrar-cuenta" className="text-slate-400 hover:text-red-500 text-xs transition-colors">Eliminar cuenta</Link>
           </div>
         </div>
       </div>
