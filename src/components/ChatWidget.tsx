@@ -119,7 +119,7 @@ export function ChatWidget() {
                     🙋
                   </div>
                   <div className="text-left">
-                    <p className="text-slate-800 font-bold text-sm">Busco un psicólogo</p>
+                    <p className="text-slate-800 font-bold text-sm">¿Quiero aprender a usar la APP?</p>
                     <p className="text-slate-400 text-xs mt-0.5">Quiero agendar una sesión</p>
                   </div>
                 </button>
@@ -132,7 +132,7 @@ export function ChatWidget() {
                     👨‍⚕️
                   </div>
                   <div className="text-left">
-                    <p className="text-slate-800 font-bold text-sm">Soy psicólogo</p>
+                    <p className="text-slate-800 font-bold text-sm">¿Quieres trabajar con nosotros?</p>
                     <p className="text-slate-400 text-xs mt-0.5">Quiero trabajar en la plataforma</p>
                   </div>
                 </button>
