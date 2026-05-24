@@ -11,13 +11,11 @@ const AndroidIcon = () => (
 
 export function AppDownloadButton() {
   const [visible, setVisible] = useState(true);
-  const [compact, setCompact] = useState(false);
   const lastY = useRef(0);
 
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY;
-      setCompact(y > 300);
       if (y < 50) {
         setVisible(true);
       } else {
@@ -38,18 +36,11 @@ export function AppDownloadButton() {
     visible ? "opacity-100 translate-y-0" : "opacity-0 pointer-events-none translate-y-3",
   ];
 
-  const mobileCompact = [
+  const mobile = [
     "md:hidden",
-    "bottom-4 right-4",
+    "bottom-4 left-4",
     "w-14 h-14 rounded-full",
     "flex items-center justify-center",
-  ];
-
-  const mobileFull = [
-    "md:hidden",
-    "bottom-3 left-1/2 -translate-x-1/2",
-    "w-[88%] max-w-sm h-14 rounded-2xl px-4",
-    "flex items-center gap-3",
   ];
 
   const desktop = [
@@ -61,30 +52,14 @@ export function AppDownloadButton() {
 
   return (
     <>
-      {/* Mobile compacto (circular) */}
+      {/* Mobile circular */}
       <a
         href={LINKS.appAndroid}
         download
         title="Descargar app Android"
-        className={[...baseClasses, ...mobileCompact, compact ? "" : "hidden"].join(" ")}
+        className={[...baseClasses, ...mobile].join(" ")}
       >
         <AndroidIcon />
-      </a>
-
-      {/* Mobile barra completa */}
-      <a
-        href={LINKS.appAndroid}
-        download
-        title="Descargar aplicación Android"
-        className={[...baseClasses, ...mobileFull, compact ? "hidden" : ""].join(" ")}
-      >
-        <AndroidIcon />
-        <span className="flex flex-col leading-tight flex-1">
-          <span className="text-white/65 text-[10px] font-semibold uppercase tracking-widest leading-none">
-            Descargar app
-          </span>
-          <span className="text-sm leading-tight">Android .apk</span>
-        </span>
       </a>
 
       {/* Desktop pill */}
