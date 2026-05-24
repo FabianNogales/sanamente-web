@@ -52,7 +52,6 @@ export function AppDownloadButton() {
 
   return (
     <>
-      {/* Mobile circular */}
       <a
         href={LINKS.appAndroid}
         download
@@ -62,7 +61,6 @@ export function AppDownloadButton() {
         <AndroidIcon />
       </a>
 
-      {/* Desktop pill */}
       <a
         href={LINKS.appAndroid}
         download
