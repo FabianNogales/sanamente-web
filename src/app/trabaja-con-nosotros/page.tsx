@@ -5,7 +5,7 @@ import { Navbar } from "@/sections/Navbar";
 import { Footer } from "@/sections/Footer";
 
 // ── URLs de contenido — pon tus links aquí ───────────────────────────────────
-const IMAGEN_HERO = "";      // URL de imagen del hero (lado derecho)
+const IMAGEN_HERO = "https://res.cloudinary.com/dcyx3nqj5/image/upload/v1779854485/ChatGPT_Image_26_may_2026_23_58_34_rxpk1x.png";      // URL de imagen del hero (lado derecho)
 const VIDEO_REGISTRO = "";   // URL video de cómo registrarse como psicólogo
 const VIDEO_RETIRO = "";     // URL video de cómo retirar dinero
 const VIDEO_TARIFAS = "";    // URL video de cómo configurar tarifas

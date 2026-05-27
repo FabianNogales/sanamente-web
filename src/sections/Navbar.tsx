@@ -28,8 +28,8 @@ export function Navbar() {
         {/* Desktop nav links */}
         <div className="hidden md:flex items-center gap-6 text-base text-slate-500 font-medium">
           <Link href="/" className={navLink("/")}>Inicio</Link>
-          <Link href="/soy-nuevo" className={navLink("/soy-nuevo")}>Soy nuevo</Link>
-          <Link href="/trabaja-con-nosotros" className={navLink("/trabaja-con-nosotros")}>Trabaja con nosotros</Link>
+          <Link href="/soy-nuevo" className={navLink("/soy-nuevo")}>Quiero hablar con un psicólogo</Link>
+          <Link href="/trabaja-con-nosotros" className={navLink("/trabaja-con-nosotros")}>Soy psicólogo profesional</Link>
         </div>
 
         {/* Desktop CTAs */}
@@ -70,8 +70,8 @@ export function Navbar() {
       {open && (
         <div className="md:hidden border-t border-slate-100 bg-white px-5 py-4 flex flex-col gap-1">
           <a href="/" onClick={() => setOpen(false)} className="py-3 text-slate-600 font-medium text-sm border-b border-slate-50 hover:text-indigo-600 transition-colors">Inicio</a>
-          <a href="/soy-nuevo" onClick={() => setOpen(false)} className="py-3 text-slate-600 font-medium text-sm border-b border-slate-50 hover:text-indigo-600 transition-colors">Soy nuevo</a>
-          <a href="/trabaja-con-nosotros" onClick={() => setOpen(false)} className="py-3 text-slate-600 font-medium text-sm border-b border-slate-50 hover:text-indigo-600 transition-colors">Trabaja con nosotros</a>
+          <a href="/soy-nuevo" onClick={() => setOpen(false)} className="py-3 text-slate-600 font-medium text-sm border-b border-slate-50 hover:text-indigo-600 transition-colors">Quiero hablar con un psicólogo</a>
+          <a href="/trabaja-con-nosotros" onClick={() => setOpen(false)} className="py-3 text-slate-600 font-medium text-sm border-b border-slate-50 hover:text-indigo-600 transition-colors">Soy psicólogo profesional</a>
           <div className="flex flex-col gap-2 pt-3">
             <Link href={LINKS.login} onClick={() => setOpen(false)} className="w-full text-center border border-slate-200 text-slate-700 font-semibold text-sm py-3 rounded-xl hover:bg-slate-50 transition-colors">
               Iniciar sesión
