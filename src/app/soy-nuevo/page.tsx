@@ -7,7 +7,7 @@ import { Footer } from "@/sections/Footer";
 import { LINKS } from "@/lib/config";
 
 // ── URLs de contenido — pon tus links aquí ───────────────────────────────────
-const IMAGEN_HERO = "";      // URL de imagen del hero (lado derecho)
+const IMAGEN_HERO = "https://res.cloudinary.com/dcyx3nqj5/image/upload/v1779854486/ChatGPT_Image_26_may_2026_23_52_14_if4rqb.png";      // URL de imagen del hero (lado derecho)
 const VIDEO_DESCARGA = "";   // URL video de cómo instalar la app
 const VIDEO_SESION = "";     // URL video de cómo agendar sesión
 

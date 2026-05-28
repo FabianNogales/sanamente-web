@@ -115,11 +115,19 @@ export async function updateAdminProfessionalProfile(
   });
 }
 
-export async function updateAdminProfessionalStatus(token: string, id: string, isActive: boolean) {
+export async function updateAdminProfessionalStatus(
+  token: string,
+  id: string,
+  isActive: boolean,
+  reviewStatus?: "APPROVED" | "REJECTED" | "PENDING",
+) {
   return apiRequest(`/admin/professionals/${encodeURIComponent(id)}/status`, {
     method: "PATCH",
     token,
-    body: JSON.stringify({ isActive }),
+    body: JSON.stringify({
+      isActive,
+      ...(reviewStatus ? { reviewStatus } : {}),
+    }),
   });
 }
 
