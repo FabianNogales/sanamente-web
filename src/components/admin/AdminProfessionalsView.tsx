@@ -115,7 +115,20 @@ export function AdminProfessionalsView() {
     if (!token) return;
     try {
       await updateAdminProfessionalStatus(token!, row.id, next);
-      setRows((prev) => prev.map((item) => (item.id === row.id ? { ...item, isActive: next } : item)));
+      const newReviewStatus = next ? "APPROVED" : "REJECTED";
+      setRows((prev) =>
+        prev.map((item) =>
+          item.id === row.id
+            ? {
+                ...item,
+                isActive: next,
+                professionalProfile: item.professionalProfile
+                  ? { ...item.professionalProfile, reviewStatus: newReviewStatus }
+                  : item.professionalProfile,
+              }
+            : item,
+        ),
+      );
     } catch (err) {
       window.alert(err instanceof Error ? err.message : "No se pudo actualizar el estado.");
     }
