@@ -61,7 +61,12 @@ export function AdminProfessionalDetailView({ professionalId }: Props) {
   async function toggleStatus(next: boolean) {
     if (!token || !row) return;
     try {
-      await updateAdminProfessionalStatus(token!, row.id, next);
+      await updateAdminProfessionalStatus(
+        token!,
+        row.id,
+        next,
+        next ? "APPROVED" : "REJECTED",
+      );
       setRow((prev) => (prev ? { ...prev, isActive: next } : prev));
     } catch (err) {
       window.alert(err instanceof Error ? err.message : "No se pudo actualizar estado.");
