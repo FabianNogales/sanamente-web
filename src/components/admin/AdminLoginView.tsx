@@ -1,7 +1,6 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { apiRequest, type LoginResponse } from "@/lib/api-client";
 import { getAdminToken, saveAdminSession } from "@/lib/admin-session";
@@ -106,9 +105,9 @@ export function AdminLoginView({ title, subtitle }: Props) {
           <p>El acceso web está habilitado para administración.</p>
           <p>
             Si eres usuario o profesional, usa la app móvil:{" "}
-            <Link href={MOBILE_APP_URL} className="font-semibold text-indigo-600 hover:text-indigo-700">
-              descargar app
-            </Link>
+            <a href={MOBILE_APP_URL} target="_blank" rel="noopener noreferrer" className="font-semibold text-indigo-600 hover:text-indigo-700">
+              Disponible en Google Play
+            </a>
           </p>
         </div>
       </section>

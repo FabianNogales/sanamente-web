@@ -64,15 +64,19 @@ export function Hero() {
         <div className="flex flex-col sm:flex-row gap-3 w-full max-w-sm mb-6">
           <a
             href={LINKS.appAndroid}
-            download
-            className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-black px-5 py-4 rounded-2xl transition-all shadow-lg shadow-indigo-200 flex items-center justify-center gap-3 active:scale-95"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 bg-[#1a1a2e] hover:bg-[#2a2a4e] text-white font-black px-5 py-4 rounded-2xl transition-all shadow-lg shadow-slate-300 flex items-center justify-center gap-3 active:scale-95"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M17.523 15.341a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-11.046 0a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM2.1 8.4h19.8A1.1 1.1 0 0 1 23 9.5v6a1.1 1.1 0 0 1-1.1 1.1H21v2.65a.75.75 0 0 1-1.5 0V16.6H4.5v2.65a.75.75 0 0 1-1.5 0V16.6h-.9A1.1 1.1 0 0 1 1 15.5v-6A1.1 1.1 0 0 1 2.1 8.4Zm.9 1.5v5h18v-5H3ZM8.22 2.47a.75.75 0 0 1 1.02-.28L12 3.8l2.76-1.61a.75.75 0 1 1 .75 1.3L13.5 4.8V7.4h-3V4.8L8.5 3.49a.75.75 0 0 1-.28-1.02Z" />
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 shrink-0" viewBox="0 0 512 512" fill="none">
+              <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1z" fill="#00D8FF" />
+              <path d="M47 0C34 6.8 25.3 19.2 25.3 35V477c0 15.8 8.7 28.2 21.7 35l242-242L47 0z" fill="#00F076" />
+              <path d="M408.5 241.4l-60.9-35.1-67.7 67.7 67.7 67.7 61.7-35.4c17.6-10.1 17.6-34.7-.8-44.9z" fill="#FFCA28" />
+              <path d="M104.6 499l220.7-220.7 60.1 60.1L104.6 499z" fill="#F4433C" />
             </svg>
             <span className="flex flex-col leading-tight text-left">
-              <span className="text-white/70 text-[10px] uppercase tracking-widest leading-none">Descargar app</span>
-              <span className="text-base leading-tight">Android .apk</span>
+              <span className="text-white/60 text-[10px] uppercase tracking-widest leading-none">Disponible en</span>
+              <span className="text-base leading-tight">Google Play</span>
             </span>
           </a>
           <Link

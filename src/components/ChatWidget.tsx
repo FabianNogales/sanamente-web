@@ -55,7 +55,7 @@ export function ChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-22 right-4 md:right-6 z-50 flex flex-col items-end gap-3">
+    <div className="fixed bottom-22 right-3 md:right-6 z-50 flex flex-col items-end gap-3">
 
       {/* Burbujas auto-desplegables */}
       {state === "closed" && bubbles.length > 0 && (
@@ -82,11 +82,11 @@ export function ChatWidget() {
         </div>
       )}
 
-      {/* Panel principal */}
+
       {state !== "closed" && (
         <div
-          className="w-[calc(100vw-2rem)] sm:w-80 md:w-96 flex flex-col rounded-3xl bg-white border border-slate-200 shadow-2xl shadow-slate-300/60 overflow-hidden animate-in fade-in zoom-in-95 duration-200"
-          style={{ height: "min(760px, calc(100vh - 80px))" }}
+          className="w-[calc(100vw-1.5rem)] sm:w-80 md:w-96 flex flex-col rounded-3xl bg-white border border-slate-200 shadow-2xl shadow-slate-300/60 overflow-hidden animate-in fade-in zoom-in-95 duration-200"
+          style={{ height: "min(720px, calc(100dvh - 7rem))" }}
         >
           {state === "selector" && (
             <>
@@ -175,7 +175,7 @@ export function ChatWidget() {
         </div>
       )}
 
-      {/* Botón flotante */}
+  
       {state === "closed" && (
         <button
           onClick={openWidget}

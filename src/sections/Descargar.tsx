@@ -27,9 +27,12 @@ function StoreButton({
   );
 }
 
-const AndroidIcon = () => (
-  <svg viewBox="0 0 24 24" className="w-7 h-7" fill="currentColor">
-    <path d="M17.523 15.341a.496.496 0 0 1-.496-.496V8.925a.496.496 0 1 1 .992 0v5.92a.496.496 0 0 1-.496.496Zm-11.046 0a.496.496 0 0 1-.496-.496V8.925a.496.496 0 1 1 .992 0v5.92a.496.496 0 0 1-.496.496ZM8.35 19.504a.496.496 0 0 1-.992 0v-1.116H6.974a.992.992 0 0 1-.992-.992V9.42h10.036v7.976a.992.992 0 0 1-.992.992h-.384v1.116a.496.496 0 1 1-.992 0v-1.116H8.35v1.116ZM8.81 5.03l-.806-1.397a.17.17 0 0 0-.233-.062.17.17 0 0 0-.062.233l.82 1.421A5.952 5.952 0 0 0 6.046 8.44h11.908A5.952 5.952 0 0 0 15.47 5.225l.82-1.421a.17.17 0 0 0-.295-.17L15.19 5.03A5.918 5.918 0 0 0 12 4.22 5.918 5.918 0 0 0 8.81 5.031ZM10.5 7.1a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0Zm4 0a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0Z" />
+const GooglePlayIcon = () => (
+  <svg viewBox="0 0 512 512" className="w-7 h-7" fill="none">
+    <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1z" fill="#00D8FF" />
+    <path d="M47 0C34 6.8 25.3 19.2 25.3 35V477c0 15.8 8.7 28.2 21.7 35l242-242L47 0z" fill="#00F076" />
+    <path d="M408.5 241.4l-60.9-35.1-67.7 67.7 67.7 67.7 61.7-35.4c17.6-10.1 17.6-34.7-.8-44.9z" fill="#FFCA28" />
+    <path d="M104.6 499l220.7-220.7 60.1 60.1L104.6 499z" fill="#F4433C" />
   </svg>
 );
 
@@ -74,7 +77,7 @@ export function Descargar() {
               <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-3">
                 <StoreButton
                   href={LINKS.appAndroid}
-                  icon={<AndroidIcon />}
+                  icon={<GooglePlayIcon />}
                   sub="Disponible en"
                   store="Google Play"
                 />

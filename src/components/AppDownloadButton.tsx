@@ -3,9 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import { LINKS } from "@/lib/config";
 
-const AndroidIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="white">
-    <path d="M17.523 15.341a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-11.046 0a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM2.1 8.4h19.8A1.1 1.1 0 0 1 23 9.5v6a1.1 1.1 0 0 1-1.1 1.1H21v2.65a.75.75 0 0 1-1.5 0V16.6H4.5v2.65a.75.75 0 0 1-1.5 0V16.6h-.9A1.1 1.1 0 0 1 1 15.5v-6A1.1 1.1 0 0 1 2.1 8.4Zm.9 1.5v5h18v-5H3ZM8.22 2.47a.75.75 0 0 1 1.02-.28L12 3.8l2.76-1.61a.75.75 0 1 1 .75 1.3L13.5 4.8V7.4h-3V4.8L8.5 3.49a.75.75 0 0 1-.28-1.02Z" />
+const GooglePlayIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 shrink-0" viewBox="0 0 512 512" fill="none">
+    <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1z" fill="#00D8FF" />
+    <path d="M47 0C34 6.8 25.3 19.2 25.3 35V477c0 15.8 8.7 28.2 21.7 35l242-242L47 0z" fill="#00F076" />
+    <path d="M408.5 241.4l-60.9-35.1-67.7 67.7 67.7 67.7 61.7-35.4c17.6-10.1 17.6-34.7-.8-44.9z" fill="#FFCA28" />
+    <path d="M104.6 499l220.7-220.7 60.1 60.1L104.6 499z" fill="#F4433C" />
   </svg>
 );
 
@@ -27,53 +30,40 @@ export function AppDownloadButton() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const baseClasses = [
-    "fixed z-40",
-    "bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98]",
-    "text-white font-black",
-    "transition-all duration-300",
-    "shadow-[0_4px_24px_rgba(79,70,229,0.5)] hover:shadow-[0_6px_32px_rgba(79,70,229,0.65)]",
-    visible ? "opacity-100 translate-y-0" : "opacity-0 pointer-events-none translate-y-3",
-  ];
-
-  const mobile = [
-    "md:hidden",
-    "bottom-4 left-4",
-    "w-14 h-14 rounded-full",
-    "flex items-center justify-center",
-  ];
-
-  const desktop = [
-    "hidden md:flex",
-    "items-center gap-3",
-    "right-6 bottom-6",
-    "w-auto h-auto px-6 py-3.5 rounded-2xl",
-  ];
+  const transitionClass = visible
+    ? "opacity-100 translate-y-0"
+    : "opacity-0 pointer-events-none translate-y-3";
 
   return (
     <>
+      {/* Mobile: ícono redondo */}
       <a
         href={LINKS.appAndroid}
-        download
-        title="Descargar app Android"
-        className={[...baseClasses, ...mobile].join(" ")}
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Disponible en Google Play"
+        className={`fixed z-40 md:hidden bottom-4 left-4 w-14 h-14 rounded-full bg-[#1a1a2e] border border-white/10 shadow-[0_4px_20px_rgba(0,0,0,0.4)] flex items-center justify-center transition-all duration-300 ${transitionClass}`}
       >
-        <AndroidIcon />
+        <GooglePlayIcon />
       </a>
 
+      {/* Desktop: badge completo */}
       <a
         href={LINKS.appAndroid}
-        download
-        title="Descargar aplicación Android"
-        className={[...baseClasses, ...desktop].join(" ")}
+        target="_blank"
+        rel="noopener noreferrer"
+        title="Disponible en Google Play"
+        className={`fixed z-40 hidden md:flex items-center gap-3 right-6 bottom-6 bg-[#1a1a2e] hover:bg-[#2a2a4e] border border-white/10 rounded-xl px-4 py-2.5 shadow-[0_4px_20px_rgba(0,0,0,0.35)] hover:shadow-[0_6px_28px_rgba(0,0,0,0.45)] transition-all duration-300 ${transitionClass}`}
       >
-        <AndroidIcon />
-        <span className="flex flex-col leading-tight">
-          <span className="text-white/65 text-[10px] font-semibold uppercase tracking-widest leading-none">
-            Descargar app
+        <GooglePlayIcon />
+        <div className="flex flex-col leading-tight">
+          <span className="text-white/60 text-[10px] font-medium uppercase tracking-widest">
+            Disponible en
           </span>
-          <span className="text-sm leading-tight">Android .apk</span>
-        </span>
+          <span className="text-white font-bold text-[15px] leading-tight">
+            Google Play
+          </span>
+        </div>
       </a>
     </>
   );

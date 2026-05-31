@@ -8,15 +8,25 @@ import { LINKS } from "@/lib/config";
 
 // ── URLs de contenido — pon tus links aquí ───────────────────────────────────
 const IMAGEN_HERO = "https://res.cloudinary.com/dcyx3nqj5/image/upload/v1779854486/ChatGPT_Image_26_may_2026_23_52_14_if4rqb.png";      // URL de imagen del hero (lado derecho)
-const VIDEO_DESCARGA = "";   // URL video de cómo instalar la app
-const VIDEO_SESION = "";     // URL video de cómo agendar sesión
+const VIDEO_DESCARGA = "https://res.cloudinary.com/dnbklbswg/video/upload/v1780270322/WhatsApp_Video_2026-05-30_at_16.46.54_jgvf0a.mp4";   // URL video de cómo instalar la app
+const VIDEO_SESION = "https://res.cloudinary.com/dnbklbswg/video/upload/v1780270324/WhatsApp_Video_2026-05-30_at_16.46.36_aacsj5.mp4";     // URL video de cómo agendar sesión
 
 // ── Pasos instalación ─────────────────────────────────────────────────────────
 const PASOS_DESCARGA = [
   {
     step: "01",
-    title: "Descarga el APK",
-    desc: "Toca el botón 'Descargar app' y guarda el archivo APK en tu celular Android.",
+    title: "Busca en Google Play",
+    desc: "Abre Google Play en tu celular Android, busca 'Sanamente' y toca el botón Instalar.",
+    icon: (
+      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+      </svg>
+    ),
+  },
+  {
+    step: "02",
+    title: "Instala la app",
+    desc: "Google Play descarga e instala Sanamente automáticamente. No necesitas hacer nada más.",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
@@ -24,19 +34,9 @@ const PASOS_DESCARGA = [
     ),
   },
   {
-    step: "02",
-    title: "Permite la instalación",
-    desc: "Ve a Ajustes → Seguridad → activa 'Instalar apps de fuentes desconocidas'. Solo es necesario una vez.",
-    icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
-      </svg>
-    ),
-  },
-  {
     step: "03",
-    title: "Instala y abre la app",
-    desc: "Toca el archivo descargado, instala y abre Sanamente. ¡En segundos estás dentro!",
+    title: "Abre y regístrate",
+    desc: "Toca Abrir, crea tu cuenta en segundos y agenda tu primera sesión con un psicólogo verificado.",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 0 0 6 3.75v16.5a2.25 2.25 0 0 0 2.25 2.25h7.5A2.25 2.25 0 0 0 18 20.25V3.75a2.25 2.25 0 0 0-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3" />
@@ -250,15 +250,19 @@ export default function SoyNuevoPage() {
 
           <a
             href={LINKS.appAndroid}
-            download
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-black px-8 py-4 rounded-2xl transition-all shadow-lg shadow-indigo-200 flex items-center gap-3 active:scale-95 w-fit"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-[#1a1a2e] hover:bg-[#2a2a4e] text-white font-black px-8 py-4 rounded-2xl transition-all shadow-lg shadow-slate-300 flex items-center gap-3 active:scale-95 w-fit"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M17.523 15.341a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-11.046 0a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM2.1 8.4h19.8A1.1 1.1 0 0 1 23 9.5v6a1.1 1.1 0 0 1-1.1 1.1H21v2.65a.75.75 0 0 1-1.5 0V16.6H4.5v2.65a.75.75 0 0 1-1.5 0V16.6h-.9A1.1 1.1 0 0 1 1 15.5v-6A1.1 1.1 0 0 1 2.1 8.4Zm.9 1.5v5h18v-5H3ZM8.22 2.47a.75.75 0 0 1 1.02-.28L12 3.8l2.76-1.61a.75.75 0 1 1 .75 1.3L13.5 4.8V7.4h-3V4.8L8.5 3.49a.75.75 0 0 1-.28-1.02Z" />
+            <svg viewBox="0 0 512 512" className="w-6 h-6 shrink-0" fill="none">
+              <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1z" fill="#00D8FF" />
+              <path d="M47 0C34 6.8 25.3 19.2 25.3 35V477c0 15.8 8.7 28.2 21.7 35l242-242L47 0z" fill="#00F076" />
+              <path d="M408.5 241.4l-60.9-35.1-67.7 67.7 67.7 67.7 61.7-35.4c17.6-10.1 17.6-34.7-.8-44.9z" fill="#FFCA28" />
+              <path d="M104.6 499l220.7-220.7 60.1 60.1L104.6 499z" fill="#F4433C" />
             </svg>
             <span className="flex flex-col leading-tight text-left">
-              <span className="text-white/70 text-[10px] uppercase tracking-widest leading-none">Descargar app</span>
-              <span className="text-base leading-tight">Android .apk</span>
+              <span className="text-white/60 text-[10px] uppercase tracking-widest leading-none">Disponible en</span>
+              <span className="text-base leading-tight">Google Play</span>
             </span>
           </a>
         </div>
