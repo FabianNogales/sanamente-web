@@ -131,6 +131,10 @@ export async function updateAdminProfessionalStatus(
   });
 }
 
+export async function deleteAdminProfessional(token: string, id: string) {
+  return apiRequest(`/admin/professionals/${encodeURIComponent(id)}`, { method: "DELETE", token });
+}
+
 export async function getAdminProfessionalStats(token: string, id: string) {
   return apiRequest(`/admin/stats/professional/${encodeURIComponent(id)}`, { method: "GET", token });
 }

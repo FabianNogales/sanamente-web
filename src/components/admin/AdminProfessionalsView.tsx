@@ -8,6 +8,7 @@ import { AdminStatusBadge } from "./AdminStatusBadge";
 import { AdminEmptyState } from "./AdminEmptyState";
 import {
   assignProfessionalSpecialtiesAdmin,
+  deleteAdminProfessional,
   editAdminProfessional,
   getAdminProfessionals,
   getAdminSpecialties,
@@ -53,6 +54,9 @@ export function AdminProfessionalsView() {
   const [specialtyNameByProfessionalId, setSpecialtyNameByProfessionalId] = useState<Record<string, string>>({});
   const [editingProfessional, setEditingProfessional] = useState<AdminProfessionalRecord | null>(null);
   const [savingEdit, setSavingEdit] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDeleteRow, setConfirmDeleteRow] = useState<AdminProfessionalRecord | null>(null);
+  const [deleteSuccess, setDeleteSuccess] = useState<string | null>(null);
 
   const [editPhone, setEditPhone] = useState("");
   const [editEmail, setEditEmail] = useState("");
@@ -154,6 +158,22 @@ export function AdminProfessionalsView() {
     setEditBio(row.professionalProfile?.bio ?? "");
     setEditFirstName(row.firstName ?? "");
     setEditLastName(row.lastName ?? "");
+  }
+
+  async function handleDelete() {
+    if (!token || !confirmDeleteRow) return;
+    try {
+      setDeletingId(confirmDeleteRow.id);
+      await deleteAdminProfessional(token, confirmDeleteRow.id);
+      setRows((prev) => prev.filter((item) => item.id !== confirmDeleteRow.id));
+      setConfirmDeleteRow(null);
+      setDeleteSuccess(`El profesional ${fullName(confirmDeleteRow)} fue eliminado correctamente.`);
+      setTimeout(() => setDeleteSuccess(null), 4000);
+    } catch (err) {
+      window.alert(err instanceof Error ? err.message : "No se pudo eliminar el profesional.");
+    } finally {
+      setDeletingId(null);
+    }
   }
 
   async function handleSaveEdit() {
@@ -342,6 +362,14 @@ export function AdminProfessionalsView() {
                         Aprobar
                       </button>
                     )}
+                    <button
+                      type="button"
+                      className="h-8 rounded-md bg-rose-600 px-3 text-xs font-semibold text-white disabled:opacity-50"
+                      disabled={deletingId === row.id}
+                      onClick={() => setConfirmDeleteRow(row)}
+                    >
+                      {deletingId === row.id ? "Eliminando..." : "Eliminar"}
+                    </button>
                   </div>
                 ),
               },
@@ -390,6 +418,42 @@ export function AdminProfessionalsView() {
           </button>
         </div>
       </div>
+
+      {deleteSuccess ? (
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-lg">
+          <span>✓</span>
+          <span>{deleteSuccess}</span>
+        </div>
+      ) : null}
+
+      {confirmDeleteRow ? (
+        <div className="fixed inset-0 bg-slate-950/40 z-50 flex items-center justify-center px-4">
+          <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-6">
+            <h3 className="text-lg font-bold text-slate-900">Eliminar profesional</h3>
+            <p className="mt-2 text-sm text-slate-600">
+              ¿Estás seguro de que deseas eliminar a <strong>{fullName(confirmDeleteRow)}</strong>? Esta acción no se puede deshacer.
+            </p>
+            <div className="mt-5 flex items-center justify-end gap-2">
+              <button
+                type="button"
+                className="h-10 rounded-lg border border-slate-300 bg-white px-4 text-sm font-semibold"
+                onClick={() => setConfirmDeleteRow(null)}
+                disabled={!!deletingId}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="h-10 rounded-lg bg-rose-600 px-4 text-sm font-semibold text-white disabled:opacity-60"
+                disabled={!!deletingId}
+                onClick={() => void handleDelete()}
+              >
+                {deletingId ? "Eliminando..." : "Sí, eliminar"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {editingProfessional ? (
         <div className="fixed inset-0 bg-slate-950/40 z-50 flex items-center justify-center px-4">
