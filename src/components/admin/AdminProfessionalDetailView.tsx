@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AdminShell } from "./AdminShell";
 import { AdminStatusBadge } from "./AdminStatusBadge";
-import { editAdminProfessional, getAdminProfessionalById, updateAdminProfessionalProfile, updateAdminProfessionalStatus } from "@/lib/admin-api";
+import { editAdminProfessional, getAdminProfessionalById, updateAdminProfessionalKycDoc, updateAdminProfessionalProfile, updateAdminProfessionalStatus } from "@/lib/admin-api";
 import type { AdminProfessionalRecord } from "@/lib/admin-types";
 import { useAdminGuard } from "./useAdminGuard";
 
@@ -22,6 +22,8 @@ export function AdminProfessionalDetailView({ professionalId }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [row, setRow] = useState<AdminProfessionalRecord | null>(null);
   const [saving, setSaving] = useState(false);
+  const [uploadingField, setUploadingField] = useState<string | null>(null);
+  const fileInputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const [editPhone, setEditPhone] = useState("");
   const [editEmail, setEditEmail] = useState("");
   const [editUsername, setEditUsername] = useState("");
@@ -70,6 +72,22 @@ export function AdminProfessionalDetailView({ professionalId }: Props) {
       setRow((prev) => (prev ? { ...prev, isActive: next } : prev));
     } catch (err) {
       window.alert(err instanceof Error ? err.message : "No se pudo actualizar estado.");
+    }
+  }
+
+  async function handleUploadDoc(
+    field: "idDocUrl" | "kycVideoUrl" | "matriculaUrl" | "tituloProfesionalUrl",
+    file: File,
+  ) {
+    if (!token || !row) return;
+    try {
+      setUploadingField(field);
+      const updated = await updateAdminProfessionalKycDoc(token, row.id, field, file);
+      setRow(updated as AdminProfessionalRecord);
+    } catch (err) {
+      window.alert(err instanceof Error ? err.message : "No se pudo subir el documento.");
+    } finally {
+      setUploadingField(null);
     }
   }
 
@@ -142,21 +160,45 @@ export function AdminProfessionalDetailView({ professionalId }: Props) {
               {row.professionalProfile?.kycFaceMatchScore != null ? `${Number(row.professionalProfile.kycFaceMatchScore).toFixed(1)}%` : "N/A"}
             </p>
             <ul className="space-y-2 text-sm">
-              {[
-                { label: "Documento de identidad", url: row.professionalProfile?.idDocUrl },
-                { label: "Video de rostro", url: row.professionalProfile?.kycVideoUrl },
-                { label: "Matrícula profesional", url: row.professionalProfile?.matriculaUrl },
-                { label: "Título profesional", url: row.professionalProfile?.tituloProfesionalUrl },
-              ].map((doc) => (
-                <li key={doc.label} className="flex items-center justify-between gap-2 rounded-lg border border-slate-200 px-3 py-2">
-                  <span>{doc.label}</span>
-                  {doc.url ? (
-                    <a href={doc.url} target="_blank" rel="noopener noreferrer" className="text-indigo-600 font-semibold">
-                      Ver documento
-                    </a>
-                  ) : (
-                    <span className="text-slate-500">No cargado</span>
-                  )}
+              {(
+                [
+                  { label: "Documento de identidad", field: "idDocUrl", url: row.professionalProfile?.idDocUrl },
+                  { label: "Video de rostro", field: "kycVideoUrl", url: row.professionalProfile?.kycVideoUrl },
+                  { label: "Matrícula profesional", field: "matriculaUrl", url: row.professionalProfile?.matriculaUrl },
+                  { label: "Título profesional", field: "tituloProfesionalUrl", url: row.professionalProfile?.tituloProfesionalUrl },
+                ] as { label: string; field: "idDocUrl" | "kycVideoUrl" | "matriculaUrl" | "tituloProfesionalUrl"; url?: string | null }[]
+              ).map((doc) => (
+                <li key={doc.field} className="flex items-center justify-between gap-2 rounded-lg border border-slate-200 px-3 py-2">
+                  <span className="flex-1">{doc.label}</span>
+                  <div className="flex items-center gap-2 shrink-0">
+                    {doc.url && (
+                      <a href={doc.url} target="_blank" rel="noopener noreferrer" className="text-indigo-600 font-semibold text-xs">
+                        Ver
+                      </a>
+                    )}
+                    <input
+                      type="file"
+                      className="hidden"
+                      ref={(el) => { fileInputRefs.current[doc.field] = el; }}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) void handleUploadDoc(doc.field, file);
+                        e.target.value = "";
+                      }}
+                    />
+                    <button
+                      type="button"
+                      disabled={uploadingField === doc.field}
+                      onClick={() => fileInputRefs.current[doc.field]?.click()}
+                      className={`h-7 rounded-md px-2.5 text-xs font-semibold disabled:opacity-50 ${
+                        doc.url
+                          ? "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                          : "bg-indigo-600 text-white hover:bg-indigo-700"
+                      }`}
+                    >
+                      {uploadingField === doc.field ? "Subiendo..." : doc.url ? "Reemplazar" : "Agregar"}
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>

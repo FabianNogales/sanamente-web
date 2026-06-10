@@ -131,6 +131,22 @@ export async function updateAdminProfessionalStatus(
   });
 }
 
+export async function updateAdminProfessionalKycDoc(
+  token: string,
+  id: string,
+  field: "idDocUrl" | "kycVideoUrl" | "matriculaUrl" | "tituloProfesionalUrl",
+  file: File,
+) {
+  const form = new FormData();
+  form.append("field", field);
+  form.append("file", file);
+  return apiRequest(`/admin/professionals/${encodeURIComponent(id)}/kyc-docs`, {
+    method: "POST",
+    token,
+    body: form,
+  });
+}
+
 export async function deleteAdminProfessional(token: string, id: string) {
   return apiRequest(`/admin/professionals/${encodeURIComponent(id)}`, { method: "DELETE", token });
 }
