@@ -6,9 +6,9 @@ import { Footer } from "@/sections/Footer";
 
 // ── URLs de contenido — pon tus links aquí ───────────────────────────────────
 const IMAGEN_HERO = "https://res.cloudinary.com/dcyx3nqj5/image/upload/v1779854485/ChatGPT_Image_26_may_2026_23_58_34_rxpk1x.png";      // URL de imagen del hero (lado derecho)
-const VIDEO_REGISTRO = "";   // URL video de cómo registrarse como psicólogo
-const VIDEO_RETIRO = "";     // URL video de cómo retirar dinero
-const VIDEO_TARIFAS = "";    // URL video de cómo configurar tarifas
+const VIDEO_REGISTRO = "https://res.cloudinary.com/dcyx3nqj5/video/upload/v1781716170/Como_registrarse_como_profesional_lc8wwj.mp4";   // URL video de cómo registrarse como psicólogo
+const VIDEO_RETIRO = "";
+const VIDEO_TARIFAS = "https://res.cloudinary.com/dcyx3nqj5/video/upload/v1781716129/Como_crear_agendas_y_horarios_como_profesional_ird546.mp4";
 
 const WHATSAPP_LINK =
   "https://wa.me/59177848691?text=Hola,%20me%20interesa%20registrarme%20como%20psic%C3%B3logo%20en%20Sanamente";
