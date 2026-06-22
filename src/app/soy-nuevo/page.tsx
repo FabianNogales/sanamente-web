@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Navbar } from "@/sections/Navbar";
 import { Footer } from "@/sections/Footer";
@@ -79,20 +79,47 @@ const PASOS_SESION = [
   },
 ];
 
-// ── Componente AutoplayVideo ──────────────────────────────────────────────────
-function AutoplayVideo({ src, className }: { src: string; className?: string }) {
+// ── Componente VideoPlayer ────────────────────────────────────────────────────
+function cloudinaryPoster(videoUrl: string): string {
+  return videoUrl
+    .replace("/video/upload/", "/video/upload/so_0/")
+    .replace(/\.(mp4|webm|mov)$/i, ".jpg");
+}
+
+function VideoPlayer({ src, className }: { src: string; className?: string }) {
+  const [playing, setPlaying] = useState(false);
   const ref = useRef<HTMLVideoElement>(null);
+  const poster = cloudinaryPoster(src);
+
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { entry.isIntersecting ? el.play().catch(() => {}) : el.pause(); },
-      { threshold: 0.4 }
+    if (playing) ref.current?.play().catch(() => {});
+  }, [playing]);
+
+  if (!playing) {
+    return (
+      <div className={`relative cursor-pointer group ${className ?? ""}`} onClick={() => setPlaying(true)}>
+        <img src={poster} alt="Vista previa del video" className="w-full rounded-2xl object-cover" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-16 h-16 rounded-full bg-white/90 shadow-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 text-indigo-600 translate-x-0.5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5.14v14l11-7-11-7z" />
+            </svg>
+          </div>
+        </div>
+      </div>
     );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-  return <video ref={ref} src={src} className={className} muted loop playsInline preload="metadata" />;
+  }
+
+  return (
+    <video
+      ref={ref}
+      src={src}
+      className={className}
+      controls
+      playsInline
+      preload="metadata"
+    />
+  );
 }
 
 // ── Step card con animación ───────────────────────────────────────────────────
@@ -195,7 +222,7 @@ function VideoSection({ src, title }: { src?: string; title: string }) {
         </div>
         <div className="relative rounded-2xl overflow-hidden border border-slate-200 shadow-xl shadow-indigo-100">
           {src ? (
-            <AutoplayVideo src={src} className="w-full rounded-2xl" />
+            <VideoPlayer src={src} className="w-full rounded-2xl" />
           ) : (
             <div className="aspect-9/16 bg-linear-to-b from-indigo-50 to-slate-50 flex flex-col items-center justify-center gap-3 text-indigo-300">
               <div className="w-14 h-14 rounded-2xl bg-indigo-100 border border-indigo-200 flex items-center justify-center">
