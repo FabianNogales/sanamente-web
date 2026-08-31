@@ -65,6 +65,13 @@ export async function updateAdminClientStatus(token: string, id: string, isActiv
   });
 }
 
+export async function forceDeleteAdminClient(token: string, id: string) {
+  return apiRequest<{ success: boolean; message: string }>(
+    `/users/force-delete/${encodeURIComponent(id)}`,
+    { method: "DELETE", token },
+  );
+}
+
 export async function getAdminProfessionals(
   token: string,
   search?: string,
