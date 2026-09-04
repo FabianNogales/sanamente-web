@@ -31,6 +31,12 @@ function fullName(row: AdminProfessionalRecord) {
   return [row.firstName, row.lastName].filter(Boolean).join(" ") || "Sin nombre";
 }
 
+// El estado de aprobación se decide por reviewStatus (lo que filtra el feed),
+// no por isActive (que solo indica si la cuenta está activa).
+function reviewOf(row: AdminProfessionalRecord) {
+  return row.professionalProfile?.reviewStatus ?? "PENDING";
+}
+
 function formatDate(value: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "-";
@@ -205,9 +211,9 @@ export function AdminProfessionalsView() {
   }
 
   const metrics = useMemo(() => {
-    const approved = rows.filter((row) => row.isActive).length;
-    const review = rows.filter((row) => !row.isActive).length;
-    const rejected = 0;
+    const approved = rows.filter((row) => reviewOf(row) === "APPROVED").length;
+    const rejected = rows.filter((row) => reviewOf(row) === "REJECTED").length;
+    const review = rows.filter((row) => reviewOf(row) === "PENDING").length;
     const today = rows.filter((row) => {
       const date = new Date(row.createdAt);
       const now = new Date();
@@ -218,8 +224,8 @@ export function AdminProfessionalsView() {
 
   const filteredRows = useMemo(() => {
     if (filter === "all") return rows;
-    if (filter === "approved") return rows.filter((row) => row.isActive);
-    if (filter === "review") return rows.filter((row) => !row.isActive);
+    if (filter === "approved") return rows.filter((row) => reviewOf(row) === "APPROVED");
+    if (filter === "review") return rows.filter((row) => reviewOf(row) !== "APPROVED");
     return [];
   }, [rows, filter]);
 
@@ -292,7 +298,15 @@ export function AdminProfessionalsView() {
               {
                 key: "state",
                 title: "Estado",
-                render: (row) => <AdminStatusBadge label={row.isActive ? "APROBADO" : "REVISIÓN"} tone={row.isActive ? "positive" : "warning"} />,
+                render: (row) => {
+                  const rs = reviewOf(row);
+                  return (
+                    <AdminStatusBadge
+                      label={rs === "APPROVED" ? "APROBADO" : rs === "REJECTED" ? "RECHAZADO" : "REVISIÓN"}
+                      tone={rs === "APPROVED" ? "positive" : rs === "REJECTED" ? "danger" : "warning"}
+                    />
+                  );
+                },
               },
               {
                 key: "docs",
@@ -333,7 +347,7 @@ export function AdminProfessionalsView() {
                     <button type="button" className="h-8 rounded-md bg-slate-100 px-3 text-xs font-semibold" onClick={() => void handleSelectProfessional(row)}>
                       Especialidades
                     </button>
-                    {row.isActive ? (
+                    {reviewOf(row) === "APPROVED" ? (
                       <button type="button" className="h-8 rounded-md bg-rose-100 px-3 text-xs font-semibold text-rose-700" onClick={() => void handleToggleStatus(row, false)}>
                         Rechazar
                       </button>

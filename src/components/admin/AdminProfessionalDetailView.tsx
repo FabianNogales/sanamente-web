@@ -29,6 +29,12 @@ export function AdminProfessionalDetailView({ professionalId }: Props) {
   const [editFirstName, setEditFirstName] = useState("");
   const [editLastName, setEditLastName] = useState("");
 
+  // El estado de aprobación se decide por reviewStatus (lo que filtra el feed),
+  // no por isActive (que solo indica si la cuenta está activa). Así una cuenta
+  // que además es cliente puede quedar "en revisión" sin apagar su acceso.
+  const reviewStatus = row?.professionalProfile?.reviewStatus ?? "PENDING";
+  const isApproved = reviewStatus === "APPROVED";
+
   useEffect(() => {
     if (!token) return;
     let active = true;
@@ -67,7 +73,17 @@ export function AdminProfessionalDetailView({ professionalId }: Props) {
         next,
         next ? "APPROVED" : "REJECTED",
       );
-      setRow((prev) => (prev ? { ...prev, isActive: next } : prev));
+      setRow((prev) =>
+        prev
+          ? {
+              ...prev,
+              isActive: next,
+              professionalProfile: prev.professionalProfile
+                ? { ...prev.professionalProfile, reviewStatus: next ? "APPROVED" : "REJECTED" }
+                : prev.professionalProfile,
+            }
+          : prev,
+      );
     } catch (err) {
       window.alert(err instanceof Error ? err.message : "No se pudo actualizar estado.");
     }
@@ -115,7 +131,10 @@ export function AdminProfessionalDetailView({ professionalId }: Props) {
           <section className="rounded-xl border border-slate-200 p-4 space-y-3">
             <h3 className="text-lg font-bold">{fullName(row)}</h3>
             <div>
-              <AdminStatusBadge label={row.isActive ? "APROBADO" : "REVISIÓN"} tone={row.isActive ? "positive" : "warning"} />
+              <AdminStatusBadge
+                label={isApproved ? "APROBADO" : reviewStatus === "REJECTED" ? "RECHAZADO" : "REVISIÓN"}
+                tone={isApproved ? "positive" : reviewStatus === "REJECTED" ? "danger" : "warning"}
+              />
             </div>
             <p className="text-sm"><strong>Email:</strong> {row.email ?? "-"}</p>
             <p className="text-sm"><strong>Teléfono:</strong> {row.phoneNumber}</p>
@@ -123,7 +142,7 @@ export function AdminProfessionalDetailView({ professionalId }: Props) {
             <p className="text-sm"><strong>Bio:</strong> {row.professionalProfile?.bio ?? "-"}</p>
 
             <div className="pt-2 flex flex-wrap gap-2">
-              {row.isActive ? (
+              {isApproved ? (
                 <button type="button" className="h-9 rounded-lg bg-rose-100 px-3 text-sm font-semibold text-rose-700" onClick={() => void toggleStatus(false)}>
                   Rechazar
                 </button>
