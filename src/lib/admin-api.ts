@@ -65,6 +65,13 @@ export async function updateAdminClientStatus(token: string, id: string, isActiv
   });
 }
 
+export async function forceDeleteAdminClient(token: string, id: string) {
+  return apiRequest<{ success: boolean; message: string }>(
+    `/users/force-delete/${encodeURIComponent(id)}`,
+    { method: "DELETE", token },
+  );
+}
+
 export async function getAdminProfessionals(
   token: string,
   search?: string,
@@ -129,6 +136,26 @@ export async function updateAdminProfessionalStatus(
       ...(reviewStatus ? { reviewStatus } : {}),
     }),
   });
+}
+
+export async function updateAdminProfessionalKycDoc(
+  token: string,
+  id: string,
+  field: "idDocUrl" | "kycVideoUrl" | "matriculaUrl" | "tituloProfesionalUrl",
+  file: File,
+) {
+  const form = new FormData();
+  form.append("field", field);
+  form.append("file", file);
+  return apiRequest(`/admin/professionals/${encodeURIComponent(id)}/kyc-docs`, {
+    method: "POST",
+    token,
+    body: form,
+  });
+}
+
+export async function deleteAdminProfessional(token: string, id: string) {
+  return apiRequest(`/admin/professionals/${encodeURIComponent(id)}`, { method: "DELETE", token });
 }
 
 export async function getAdminProfessionalStats(token: string, id: string) {

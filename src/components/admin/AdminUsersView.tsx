@@ -5,7 +5,13 @@ import { AdminShell } from "./AdminShell";
 import { AdminTable } from "./AdminTable";
 import { AdminStatusBadge } from "./AdminStatusBadge";
 import { AdminEmptyState } from "./AdminEmptyState";
-import { getAdminClientById, getAdminClients, updateAdminClientStatus } from "@/lib/admin-api";
+import { ConfirmModal } from "./packages/ConfirmModal";
+import {
+  forceDeleteAdminClient,
+  getAdminClientById,
+  getAdminClients,
+  updateAdminClientStatus,
+} from "@/lib/admin-api";
 import type { AdminUserRecord } from "@/lib/admin-types";
 import { useAdminGuard } from "./useAdminGuard";
 
@@ -41,6 +47,9 @@ export function AdminUsersView() {
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [selectedUser, setSelectedUser] = useState<AdminUserRecord | null>(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<AdminUserRecord | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
 
   async function load(initial = false) {
     if (!token) return;
@@ -95,6 +104,29 @@ export function AdminUsersView() {
     } catch (err) {
       window.alert(err instanceof Error ? err.message : "No se pudo actualizar el estado del usuario.");
     }
+  }
+
+  async function handleConfirmDelete() {
+    if (!token || !userToDelete) return;
+    const target = userToDelete;
+    try {
+      setDeleting(true);
+      await forceDeleteAdminClient(token, target.id);
+      setRows((prev) => prev.filter((item) => item.id !== target.id));
+      setSelectedUser((prev) => (prev?.id === target.id ? null : prev));
+      setDeleteSuccess(true);
+    } catch (err) {
+      setUserToDelete(null);
+      window.alert(err instanceof Error ? err.message : "No se pudo eliminar el usuario.");
+    } finally {
+      setDeleting(false);
+    }
+  }
+
+  function handleCloseDeleteModal() {
+    if (deleting) return;
+    setUserToDelete(null);
+    setDeleteSuccess(false);
   }
 
   async function handleOpenDetail(id: string) {
@@ -219,6 +251,13 @@ export function AdminUsersView() {
                     >
                       {row.isActive ? "Bloquear" : "Desbloquear"}
                     </button>
+                    <button
+                      type="button"
+                      className="h-8 rounded-md bg-rose-600 px-3 text-xs font-semibold text-white hover:bg-rose-700"
+                      onClick={() => setUserToDelete(row)}
+                    >
+                      Eliminar
+                    </button>
                   </div>
                 ),
               },
@@ -270,6 +309,24 @@ export function AdminUsersView() {
           </div>
         </div>
       ) : null}
+
+      <ConfirmModal
+        open={Boolean(userToDelete)}
+        title="Eliminar usuario"
+        description={
+          userToDelete
+            ? `Vas a eliminar a ${fullName(userToDelete)} de forma permanente. Se borrarán también sus reservas, reseñas y billetera. Esta acción no se puede deshacer.`
+            : ""
+        }
+        confirmLabel="Eliminar"
+        variant="danger"
+        loading={deleting}
+        success={deleteSuccess}
+        successTitle="Usuario eliminado"
+        successDescription="El usuario fue eliminado correctamente."
+        onConfirm={() => void handleConfirmDelete()}
+        onClose={handleCloseDeleteModal}
+      />
     </AdminShell>
   );
 }

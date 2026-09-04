@@ -21,9 +21,6 @@ export function ChatWidget() {
   const [dismissed, setDismissed] = useState(false);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-  // No mostrar en páginas de admin
-  if (pathname?.startsWith("/admin")) return null;
-
   useEffect(() => {
     const delays = [3000, 8000, 14000];
     delays.forEach((delay, i) => {
@@ -53,6 +50,9 @@ export function ChatWidget() {
     setState("selector");
     dismiss();
   }
+
+  // No mostrar en páginas de admin
+  if (pathname?.startsWith("/admin")) return null;
 
   return (
     <div className="fixed bottom-22 right-3 md:right-6 z-50 flex flex-col items-end gap-3">
