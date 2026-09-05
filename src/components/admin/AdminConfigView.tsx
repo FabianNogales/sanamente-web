@@ -20,6 +20,7 @@ export function AdminConfigView() {
   const [referralClientDiscountSessions, setReferralClientDiscountSessions] = useState("10");
   const [referralProfessionalRewardPercent, setReferralProfessionalRewardPercent] = useState("5");
   const [withdrawalsEnabled, setWithdrawalsEnabled] = useState(true);
+  const [minAppVersion, setMinAppVersion] = useState("1.0");
   const [savingConfig, setSavingConfig] = useState(false);
 
   async function loadData() {
@@ -38,6 +39,7 @@ export function AdminConfigView() {
       setReferralClientDiscountSessions(String(config.referralClientDiscountSessions ?? 10));
       setReferralProfessionalRewardPercent(String(config.referralProfessionalRewardPercent ?? 5));
       setWithdrawalsEnabled(Boolean(config.withdrawalsEnabled));
+      setMinAppVersion(String(config.minAppVersion ?? "1.0"));
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo cargar la configuracion del sistema.");
     } finally {
@@ -70,6 +72,9 @@ export function AdminConfigView() {
     if (!Number.isFinite(clientDiscountSessions) || clientDiscountSessions < 1) return window.alert("Sesiones con descuento debe ser 1 o mayor.");
     if (!Number.isFinite(professionalRewardPercent) || professionalRewardPercent < 0 || professionalRewardPercent > 100) return window.alert("Recompensa profesional entre 0 y 100.");
 
+    const trimmedVersion = minAppVersion.trim();
+    if (!/^\d+(\.\d+)*$/.test(trimmedVersion)) return window.alert("Version minima invalida. Usa formato como 50 o 50.0");
+
     try {
       setSavingConfig(true);
       await updateAdminConfig(token, {
@@ -83,6 +88,7 @@ export function AdminConfigView() {
         referralClientDiscountSessions: Math.trunc(clientDiscountSessions),
         referralProfessionalRewardPercent: professionalRewardPercent,
         withdrawalsEnabled,
+        minAppVersion: trimmedVersion,
       });
       window.alert("Parametros globales actualizados.");
       await loadData();
@@ -133,6 +139,13 @@ export function AdminConfigView() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
           <label className="flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2"><input type="checkbox" checked={referralEnabled} onChange={(e) => setReferralEnabled(e.target.checked)} />Programa de referidos habilitado</label>
           <label className="flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2"><input type="checkbox" checked={withdrawalsEnabled} onChange={(e) => setWithdrawalsEnabled(e.target.checked)} />Retiros habilitados</label>
+        </div>
+
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-3">
+          <label className="text-sm font-semibold text-amber-900">Version minima de la app (forzar actualizacion)
+            <input value={minAppVersion} onChange={(e) => setMinAppVersion(e.target.value)} placeholder="50.0" className="mt-1 h-10 w-full rounded-lg border border-amber-300 bg-white px-3 text-sm" />
+          </label>
+          <span className="mt-1 block text-xs text-amber-700">Las apps con version menor a esta veran la pantalla &quot;Actualizacion requerida&quot;. Formato: 50 o 50.0</span>
         </div>
 
         <button type="button" className="h-10 rounded-lg bg-indigo-600 px-4 text-sm font-semibold text-white disabled:opacity-60" disabled={savingConfig} onClick={() => void handleSaveConfig()}>
