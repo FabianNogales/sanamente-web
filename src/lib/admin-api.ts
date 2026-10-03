@@ -113,7 +113,7 @@ export async function editAdminProfessional(
 export async function updateAdminProfessionalProfile(
   token: string,
   id: string,
-  payload: { firstName?: string; lastName?: string; username?: string; bio?: string },
+  payload: { firstName?: string; lastName?: string; username?: string; bio?: string; canCharge?: boolean },
 ) {
   return apiRequest(`/admin/professionals/${encodeURIComponent(id)}/profile`, {
     method: "PATCH",

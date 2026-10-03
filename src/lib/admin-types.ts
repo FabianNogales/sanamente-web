@@ -64,6 +64,9 @@ export type AdminProfessionalRecord = {
     idDocUrl?: string | null;
     reviewStatus?: "PENDING" | "APPROVED" | "REJECTED" | null;
     reviewNotes?: string | null;
+    verificationDocType?: "CI" | "TITULO" | "MATRICULA" | null;
+    canCharge?: boolean | null;
+    chargeVerificationPending?: boolean | null;
     kycVideoUrl?: string | null;
     kycSelfieUrl?: string | null;
     matriculaUrl?: string | null;

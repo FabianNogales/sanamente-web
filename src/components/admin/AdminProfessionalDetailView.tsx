@@ -37,6 +37,21 @@ export function AdminProfessionalDetailView({ professionalId }: Props) {
   const reviewStatus = row?.professionalProfile?.reviewStatus ?? "PENDING";
   const isApproved = reviewStatus === "APPROVED";
 
+  // Tipo de documento con el que se verifica. CI => solo sesiones gratuitas;
+  // TITULO/MATRICULA => al aprobar se habilita el cobro (canCharge en backend).
+  const verificationDocType = row?.professionalProfile?.verificationDocType ?? null;
+  const docTypeLabel =
+    verificationDocType === "CI"
+      ? "Carnet de identidad (CI)"
+      : verificationDocType === "MATRICULA"
+        ? "Matrícula profesional"
+        : verificationDocType === "TITULO"
+          ? "Título en provisión nacional"
+          : "Sin especificar";
+  const willCharge = verificationDocType === "TITULO" || verificationDocType === "MATRICULA";
+  const canCharge = Boolean(row?.professionalProfile?.canCharge);
+  const chargeVerificationPending = Boolean(row?.professionalProfile?.chargeVerificationPending);
+
   useEffect(() => {
     if (!token) return;
     let active = true;
@@ -88,6 +103,30 @@ export function AdminProfessionalDetailView({ professionalId }: Props) {
       );
     } catch (err) {
       window.alert(err instanceof Error ? err.message : "No se pudo actualizar estado.");
+    }
+  }
+
+  async function setCharge(next: boolean) {
+    if (!token || !row) return;
+    try {
+      await updateAdminProfessionalProfile(token, row.id, { canCharge: next });
+      setRow((prev) =>
+        prev
+          ? {
+              ...prev,
+              professionalProfile: prev.professionalProfile
+                ? {
+                    ...prev.professionalProfile,
+                    canCharge: next,
+                    chargeVerificationPending: false,
+                    verificationDocType: next ? "TITULO" : prev.professionalProfile.verificationDocType,
+                  }
+                : prev.professionalProfile,
+            }
+          : prev,
+      );
+    } catch (err) {
+      window.alert(err instanceof Error ? err.message : "No se pudo actualizar el cobro.");
     }
   }
 
@@ -173,11 +212,39 @@ export function AdminProfessionalDetailView({ professionalId }: Props) {
           </section>
 
           <section className="rounded-xl border border-slate-200 p-4 space-y-2">
-            <h3 className="text-lg font-bold">Cotejo y documentos</h3>
-            <p className="text-sm">
-              <strong>Face match:</strong> {row.professionalProfile?.kycFaceMatchStatus ?? "PENDING"} ·{" "}
-              {row.professionalProfile?.kycFaceMatchScore != null ? `${Number(row.professionalProfile.kycFaceMatchScore).toFixed(1)}%` : "N/A"}
-            </p>
+            <h3 className="text-lg font-bold">Verificación y documentos</h3>
+            <div className={`rounded-lg border px-3 py-2 text-sm ${willCharge ? "border-emerald-200 bg-emerald-50" : "border-amber-200 bg-amber-50"}`}>
+              <p><strong>Documento elegido:</strong> {docTypeLabel}</p>
+              <p>
+                <strong>Al aprobar:</strong>{" "}
+                {willCharge ? "podrá COBRAR por sus sesiones." : "solo podrá ofrecer sesiones GRATUITAS (sin cobro)."}
+              </p>
+              <p><strong>Cobro habilitado actualmente:</strong> {canCharge ? "Sí" : "No"}</p>
+              {chargeVerificationPending && (
+                <p className="mt-1 font-semibold text-amber-700">
+                  ⚠️ Subió su título y espera revisión para habilitar el cobro.
+                </p>
+              )}
+              <div className="pt-2">
+                {canCharge ? (
+                  <button
+                    type="button"
+                    className="h-8 rounded-lg bg-rose-100 px-3 text-xs font-semibold text-rose-700"
+                    onClick={() => void setCharge(false)}
+                  >
+                    Deshabilitar cobro
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="h-8 rounded-lg bg-emerald-600 px-3 text-xs font-semibold text-white"
+                    onClick={() => void setCharge(true)}
+                  >
+                    Habilitar cobro (título verificado)
+                  </button>
+                )}
+              </div>
+            </div>
             <ul className="space-y-2 text-sm">
               {(
                 [
