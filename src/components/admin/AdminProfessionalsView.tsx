@@ -334,10 +334,16 @@ export function AdminProfessionalsView() {
                 render: (row) => {
                   const p = row.professionalProfile;
                   const count = [p?.idDocUrl, p?.kycVideoUrl, p?.matriculaUrl, p?.tituloProfesionalUrl].filter(Boolean).length;
+                  // La verificación la decide el admin vía reviewStatus; kycFaceMatchStatus
+                  // es un campo heredado que nunca se calcula (siempre PENDING), así que
+                  // reflejamos el estado real de la revisión para no confundir.
+                  const rs = reviewOf(row);
                   return (
                     <div className="text-xs">
                       <p className={count >= 3 ? "text-emerald-700 font-semibold" : "text-rose-700 font-semibold"}>{count}/4 docs</p>
-                      <p className="text-slate-500">{p?.kycFaceMatchStatus ?? "PENDING"}</p>
+                      <p className={rs === "APPROVED" ? "text-emerald-600" : rs === "REJECTED" ? "text-rose-600" : "text-slate-500"}>
+                        {rs === "APPROVED" ? "VERIFICADO" : rs === "REJECTED" ? "RECHAZADO" : "PENDIENTE"}
+                      </p>
                     </div>
                   );
                 },
